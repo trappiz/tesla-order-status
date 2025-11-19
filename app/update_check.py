@@ -108,6 +108,23 @@ def human_delta(a: datetime, b: datetime) -> str:
     mins = (secs % 3600) // 60
     return f"{days}d {hrs}h {mins}m"
 
+
+def _copytree_compat(src: Path, dst: Path) -> None:
+    """Recursively copy files supporting Python versions without dirs_exist_ok."""
+    if sys.version_info >= (3, 8):
+        shutil.copytree(src, dst, dirs_exist_ok=True)
+        return
+
+    if dst.exists() and not dst.is_dir():
+        raise ValueError(f"Target path {dst} exists and is not a directory")
+    dst.mkdir(parents=True, exist_ok=True)
+    for child in src.iterdir():
+        target = dst / child.name
+        if child.is_dir():
+            _copytree_compat(child, target)
+        else:
+            shutil.copy2(child, target)
+
 def perform_update(url: str = ZIP_URL, timeout: int = REQUEST_TIMEOUT) -> bool:
     """
     Download and extract a zip archive to the current directory.
@@ -125,7 +142,7 @@ def perform_update(url: str = ZIP_URL, timeout: int = REQUEST_TIMEOUT) -> bool:
             for item in extracted_dir.iterdir():
                 target = Path(".") / item.name
                 if item.is_dir():
-                    shutil.copytree(item, target, dirs_exist_ok=True)
+                    _copytree_compat(item, target)
                 else:
                     shutil.copy2(item, target)
     except Exception as e:

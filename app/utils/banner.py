@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import textwrap
 import webbrowser
-from typing import Any, List
+from typing import Any, Dict, List
 
 from app.config import PRIVATE_DIR
 from app.utils.connection import request_with_retry
@@ -33,7 +33,7 @@ def _save_seen(seen: List[int]) -> None:
     BANNER_FILE.write_text(json.dumps(unique_seen), encoding="utf-8")
 
 
-def _fetch_banner(seen: List[int]) -> dict[str, Any]:
+def _fetch_banner(seen: List[int]) -> Dict[str, Any]:
     try:
         data = {
             "seen": seen,
@@ -68,7 +68,7 @@ def wrap_with_linebreaks(text, width=60):
     return "\n".join(wrapped_lines)
 
 
-def _banner_targets_script(banner: dict[str, Any]) -> bool:
+def _banner_targets_script(banner: Dict[str, Any]) -> bool:
     """Return True when the banner is allowed to be shown in the Python script."""
     if not banner:
         return False

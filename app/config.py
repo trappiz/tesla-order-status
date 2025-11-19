@@ -2,7 +2,7 @@ import json
 import re
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict
 
 # -------------------------
 # Constants
@@ -39,7 +39,7 @@ except:
 class Config:
     def __init__(self, path: Path):
         self._path = path
-        self._cfg: dict[str, Any] = {}
+        self._cfg: Dict[str, Any] = {}
         self.load()  # gleich beim Init laden
 
     def load(self) -> None:

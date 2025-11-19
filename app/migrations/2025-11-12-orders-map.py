@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from app.config import ORDERS_FILE
 
@@ -25,7 +25,7 @@ def _save_json(path: Path, data: Any) -> None:
         json.dump(data, f)
 
 
-def _extract_reference(entry: Dict[str, Any]) -> str | None:
+def _extract_reference(entry: Dict[str, Any]) -> Optional[str]:
     if not isinstance(entry, dict):
         return None
     order_payload = entry.get("order")

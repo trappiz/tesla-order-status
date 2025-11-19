@@ -16,6 +16,23 @@ import zipfile
 from pathlib import Path
 
 
+def _copytree_compat(src: Path, dst: Path) -> None:
+    """Recursively copy directories without relying on dirs_exist_ok."""
+    if sys.version_info >= (3, 8):
+        shutil.copytree(src, dst, dirs_exist_ok=True)
+        return
+
+    if dst.exists() and not dst.is_dir():
+        raise ValueError(f"Target path {dst} exists and is not a directory")
+    dst.mkdir(parents=True, exist_ok=True)
+    for child in src.iterdir():
+        target = dst / child.name
+        if child.is_dir():
+            _copytree_compat(child, target)
+        else:
+            shutil.copy2(child, target)
+
+
 ZIP_URL = "https://github.com/chrisi51/tesla-order-status/archive/refs/heads/main.zip"
 
 
@@ -48,7 +65,7 @@ def main() -> None:
             for item in extracted_dir.iterdir():
                 target = Path('.') / item.name
                 if item.is_dir():
-                    shutil.copytree(item, target, dirs_exist_ok=True)
+                    _copytree_compat(item, target)
                 else:
                     shutil.copy2(item, target)
         print("...Hotfix applied. Please rerun tesla_order_status.py")

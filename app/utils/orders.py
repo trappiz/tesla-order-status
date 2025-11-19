@@ -5,7 +5,7 @@ import re
 import sys
 from collections import OrderedDict
 from datetime import datetime
-from typing import Any, Dict, Iterator, List, MutableMapping, Tuple, OrderedDict as TypingOrderedDict
+from typing import Any, Dict, Iterator, List, MutableMapping, Optional, Tuple, OrderedDict as TypingOrderedDict
 try:
     import pyperclip
     HAS_PYPERCLIP = True
@@ -125,7 +125,7 @@ def _orders_map_to_list(orders: Any) -> List[DetailedOrder]:
     return []
 
 
-def _extract_reference_number(entry: Any) -> str | None:
+def _extract_reference_number(entry: Any) -> Optional[str]:
     if not isinstance(entry, MutableMapping):
         return None
     order_payload = entry.get('order')

@@ -11,7 +11,7 @@ from __future__ import annotations
 import json
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from app.config import ORDERS_FILE, HISTORY_FILE
 
@@ -27,7 +27,7 @@ def _save_json(path: Path, data: Any) -> None:
         json.dump(data, f)
 
 
-def _extract_reference(entry: Any) -> str | None:
+def _extract_reference(entry: Any) -> Optional[str]:
     if not isinstance(entry, dict):
         return None
     order_payload = entry.get("order")
@@ -63,7 +63,7 @@ def _build_index_map() -> Dict[str, str]:
     return mapping
 
 
-def _resolve_reference_and_key(change: Dict[str, Any], index_map: Dict[str, str]) -> Tuple[str | None, str]:
+def _resolve_reference_and_key(change: Dict[str, Any], index_map: Dict[str, str]) -> Tuple[Optional[str], str]:
     if not isinstance(change, dict):
         return None, ""
 
