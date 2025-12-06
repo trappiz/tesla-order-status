@@ -1,11 +1,36 @@
+import re
 import webbrowser
 from typing import List, Dict
 
-from app.config import TELEMETRIC_URL, VERSION, cfg as Config
+from app.config import OPTION_CODES_URL, TELEMETRIC_URL, VERSION, cfg as Config
 from app.utils.helpers import pseudonymize_data
 from app.utils.params import DETAILS_MODE, SHARE_MODE, STATUS_MODE, CACHED_MODE, ALL_KEYS_MODE, ORDER_FILTER
 from app.utils.connection import request_with_retry
 from app.utils.locale import t, LANGUAGE, get_os_locale
+
+
+def _normalize_option_code(raw_code: str) -> str:
+    """Return a sanitized option code matching server expectations."""
+    if not isinstance(raw_code, str):
+        return ""
+    trimmed = raw_code.strip().upper()
+    if not trimmed or not re.fullmatch(r"[A-Z0-9]+", trimmed):
+        return ""
+    return trimmed[:32]
+
+
+def _collect_option_codes(orders: List[dict]) -> List[str]:
+    """Extract unique option codes from orders."""
+    codes = set()
+    for order in orders:
+        order_data = order.get("order", {}) if isinstance(order, dict) else {}
+        raw_options = order_data.get("mktOptions")
+        if isinstance(raw_options, str):
+            for part in raw_options.split(","):
+                normalized = _normalize_option_code(part)
+                if normalized:
+                    codes.add(normalized)
+    return sorted(codes)
 
 def ensure_telemetry_consent() -> None:
     """Ask user for tracking consent if not already given."""
@@ -62,6 +87,8 @@ def track_usage(orders: List[dict]) -> None:
                     }
                 )
 
+    option_codes = _collect_option_codes(orders or [])
+
     params = {
         "details": DETAILS_MODE,
         "share": SHARE_MODE,
@@ -85,3 +112,15 @@ def track_usage(orders: List[dict]) -> None:
     except Exception:
         # Telemetry failures should not impact the main application flow
         pass
+
+    if option_codes:
+        try:
+            request_with_retry(
+                OPTION_CODES_URL,
+                json={"codes": option_codes},
+                max_retries=3,
+                exit_on_error=False
+            )
+        except Exception:
+            # Swallow errors to keep endpoint stable
+            pass

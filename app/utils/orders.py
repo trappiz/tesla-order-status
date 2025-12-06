@@ -23,7 +23,12 @@ from app.utils.helpers import (
     get_delivery_appointment_display,
     locale_format_datetime
 )
-from app.utils.history import load_history_from_file, save_history_to_file, print_history
+from app.utils.history import (
+    HISTORY_TRANSLATIONS_IGNORED,
+    load_history_from_file,
+    save_history_to_file,
+    print_history
+)
 from app.utils.locale import t, LANGUAGE, use_default_language
 import app.utils.history as history_module
 from app.utils.params import DETAILS_MODE, SHARE_MODE, STATUS_MODE, CACHED_MODE, ORDER_FILTER
@@ -56,6 +61,17 @@ def _group_changes_by_reference(changes: List[Dict[str, Any]]) -> Dict[str, List
         clean_change = {k: v for k, v in change.items() if k != 'order_reference'}
         grouped.setdefault(reference_str, []).append(clean_change)
     return grouped
+
+
+def _has_status_relevant_changes(changes: List[Dict[str, Any]]) -> bool:
+    """Return True when a change should flip the --status exit code."""
+    for change in changes:
+        key = change.get('key')
+        if not isinstance(key, str):
+            return True
+        if not any(key.startswith(prefix) for prefix in HISTORY_TRANSLATIONS_IGNORED):
+            return True
+    return False
 
 
 def _filter_orders_for_display(orders: Any) -> OrderMap:
@@ -513,9 +529,10 @@ def main(access_token) -> None:
 
     if old_orders:
         differences = _compare_orders(old_orders, new_orders)
+        status_relevant_changes = _has_status_relevant_changes(differences)
         if differences:
             if STATUS_MODE:
-                print("1")
+                print("1" if status_relevant_changes else "0")
             _save_orders_to_file(new_orders)
             history = load_history_from_file()
             grouped_changes = _group_changes_by_reference(differences)
