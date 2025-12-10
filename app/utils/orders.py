@@ -251,16 +251,25 @@ def get_model_from_order(detailed_order) -> str:
     decoded_options = decode_option_codes(order.get('mktOptions', ''))
     model = "unknown"
     for _, description in decoded_options:
-        if 'Model' in description and len(description) > 10:
+        if 'Model' in description:
+
+           description = description.strip()
            # Extract model name and configuration suffix using regex
            # Model Y Long Range Dual Motor - AWD LR (Juniper) => Model Y - AWD LR
-           match = re.match(r'(Model [YSX3]).*?((AWD|RWD) (LR|SR|P)).*?$', description)
+           # Model S Plaid => Model S Plaid
+           match = re.match(r'(Model [YSX3]).*?((?:AWD|RWD) (?:LR|SR|P)).*?$', description)
            if match:
                model_name = match.group(1)
                config_suffix = match.group(2)
                value = f"{model_name} - {config_suffix}"
                model = value.strip()
                break
+           else:
+               # If first group matches but second doesn't, use full description
+               match = re.match(r'(Model [YSX3]).*$', description)
+               if match:
+                   model = description.strip()
+                   break
 
     return model
 
@@ -303,12 +312,14 @@ def _render_share_output(detailed_orders):
                         interior = cleaned_description
 
                 if category in {'models', 'model'} or ('Model' in cleaned_description and len(cleaned_description) > 10):
-                    match = re.match(r'(Model [YSX3]).*?((AWD|RWD) (LR|SR|P)).*?$', cleaned_description)
+                    match = re.match(r'(Model [YSX3])(?:.*?((?:AWD|RWD) (?:LR|SR|P)))?.*?$', cleaned_description)
                     if match:
                         model_name = match.group(1)
                         config_suffix = match.group(2)
-                        value = f"{model_name} - {config_suffix}"
-                        model = value.strip()
+                        if config_suffix:
+                            model = f"{model_name} - {config_suffix}".strip()
+                        else:
+                            model = cleaned_description.strip()
 
         if model and paint and interior:
             msg = f"{model} / {paint} / {interior}"
