@@ -24,7 +24,7 @@
   "[PACKAGE CORRUPT]": "[USZKODZONY PAKIET]",
   "Your Project is missing some files. Please download the complete project.": "W Twoim projekcie brakuje niektórych plików. Pobierz cały projekt.",
   "[UPDATE AVAILABLE]": "[DOSTĘPNA AKTUALIZACJA]",
-  "Last Update: {delta} younger than your version =)": "Ostatnia aktualizacja: {delta} młodsza od Twojej wersji =)",
+  "Last Update: {delta} younger than your version": "Ostatnia aktualizacja: {delta} młodsza od Twojej wersji",
   "To retrieve your order status, you need to authenticate with your Tesla account.": "Aby pobrać status zamówienia, musisz zalogować się na konto Tesla.",
   "A browser window will open with the Tesla login page. After logging in you will likely see a": "Otworzy się okno przeglądarki ze stroną logowania Tesli. Po zalogowaniu prawdopodobnie zobaczysz",
   "\"Page Not Found\"": "\"Strona nie znaleziona\"",
@@ -39,10 +39,6 @@
   "> Access token is not valid anymore. Refreshing tokens...": "> Token dostępu nie jest już ważny. Odświeżanie tokenów...",
   "> Error loading tokens from file. Re-authenticating...": "> Błąd podczas wczytywania tokenów z pliku. Ponowna autoryzacja...",
   "Would you like to save the tokens to a file in the current directory for use in future requests? (y/n): ": "Czy chcesz zapisać tokeny do pliku w bieżącym katalogu do użycia w przyszłych zapytaniach? (y/n): ",
-  "Do you allow collection of non-personalised usage data to improve the script (check the README.md for details)? (y/n): ": "Czy zezwalasz na zbieranie niepersonalizowanych danych o użyciu w celu ulepszenia skryptu (szczegóły w README.md)? (y/n): ",
-  "Telemetry enabled. Thank you so much for your support, bro.": "Telemetria włączona. Dzięki wielkie za wsparcie!",
-  "Naww, I've counted on you! =( I may ask again later, OK? =)": "Eee, liczyłem na Ciebie! =( Może zapytam później, OK? =)",
-  "Telemetry disabled. (ENTER): ": "Telemetria wyłączona. (ENTER): ",
   "Unknown option code": "Nieznany kod opcji",
 
   "Error: Received empty response from Tesla API. Please try again later.": "Błąd: Otrzymano pustą odpowiedź z API Tesli. Spróbuj ponownie później.",
@@ -84,7 +80,7 @@
   "Financed Amount": "Kwota finansowana",
   "Approved Amount": "Kwota zatwierdzona",
 
-  "BOTTOM LINE HELP": "przetestuj --help, aby zobaczyć nowe funkcje, które mogą Cię zainteresować =)",
+  "BOTTOM LINE HELP": "przetestuj --help, aby zobaczyć nowe funkcje, które mogą Cię zainteresować",
   "BOTTOM LINE TEXT IN CLIPBOARD": "Przyjazna wersja wyjścia została skopiowana do schowka!",
   "BOTTOM LINE CLIPBOARD NOT WORKING": "Aby automatycznie skopiować przyjazną wersję wyjścia do schowka, zobacz przewodnik instalacji:",
 

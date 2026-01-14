@@ -24,7 +24,7 @@
   "[PACKAGE CORRUPT]": "[PACKAGE CORRUPT]",
   "Your Project is missing some files. Please download the complete project.": "Your Project is missing some files. Please download the complete project.",
   "[UPDATE AVAILABLE]": "[UPDATE AVAILABLE]",
-  "Last Update: {delta} younger than your version =)": "Last Update: {delta} younger than your version =)",
+  "Last Update: {delta} younger than your version": "Last Update: {delta} younger than your version",
   "To retrieve your order status, you need to authenticate with your Tesla account.": "To retrieve your order status, you need to authenticate with your Tesla account.",
   "A browser window will open with the Tesla login page. After logging in you will likely see a": "A browser window will open with the Tesla login page. After logging in you will likely see a",
   "\"Page Not Found\"": "\"Page Not Found\"",
@@ -39,10 +39,6 @@
   "> Access token is not valid anymore. Refreshing tokens...": "> Access token is not valid anymore. Refreshing tokens...",
   "> Error loading tokens from file. Re-authenticating...": "> Error loading tokens from file. Re-authenticating...",
   "Would you like to save the tokens to a file in the current directory for use in future requests? (y/n): ": "Would you like to save the tokens to a file in the current directory for use in future requests? (y/n): ",
-  "Do you allow collection of non-personalised usage data to improve the script (check the README.md for details)? (y/n): ": "Do you allow collection of non-personalised usage data to improve the script (check the README.md for details)? (y/n): ",
-  "Telemetry enabled. Thank you so much for your support, bro.": "Telemetry enabled. Thank you so much for your support, bro.",
-  "Naww, I've counted on you! =( I may ask again later, OK? =)": "Naww, I've counted on you! =( I may ask again later, OK? =)",
-  "Telemetry disabled. (ENTER): ": "Telemetry disabled. (ENTER): ",
   "Unknown option code": "Unknown option code",
 
   "Error: Received empty response from Tesla API. Please try again later." : "Error: Received empty response from Tesla API. Please try again later.",
@@ -84,7 +80,7 @@
   "Financed Amount": "Financed Amount",
   "Approved Amount": "Approved Amount",
 
-  "BOTTOM LINE HELP": "try --help for showing the new features, that may be interesting for you =)",
+  "BOTTOM LINE HELP": "try --help for showing the new features, that may be interesting for you",
   "BOTTOM LINE TEXT IN CLIPBOARD": "A share-friendly version of the output has been copied to clipboard!",
   "BOTTOM LINE CLIPBOARD NOT WORKING": "To automatically copy a share-friendly version of the output to your clipboard, see the installation guide for details:",
 

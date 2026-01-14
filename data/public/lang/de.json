@@ -24,7 +24,7 @@
   "[PACKAGE CORRUPT]": "[PAKET BESCHÄDIGT]",
   "Your Project is missing some files. Please download the complete project.": "Deinem Projekt fehlen einige Dateien. Bitte lade das komplette Projekt herunter.",
   "[UPDATE AVAILABLE]": "[UPDATE VERFÜGBAR]",
-  "Last Update: {delta} younger than your version =)": "Letztes Update: {delta} jünger als deine Version =)",
+  "Last Update: {delta} younger than your version": "Letztes Update: {delta} jünger als deine Version",
   "To retrieve your order status, you need to authenticate with your Tesla account.": "Um deinen Bestellstatus abzurufen, musst du dich mit deinem Tesla-Konto authentifizieren.",
   "A browser window will open with the Tesla login page. After logging in you will likely see a": "Ein Browserfenster mit der Tesla-Anmeldeseite wird geöffnet. Nach dem Einloggen siehst du wahrscheinlich eine",
   "\"Page Not Found\"": "\"Seite nicht gefunden\"",
@@ -39,10 +39,6 @@
   "> Access token is not valid anymore. Refreshing tokens...": "> Zugriffstoken ist nicht mehr gültig. Tokens werden aktualisiert...",
   "> Error loading tokens from file. Re-authenticating...": "> Fehler beim Laden der Tokens aus der Datei. Erneute Authentifizierung...",
   "Would you like to save the tokens to a file in the current directory for use in future requests? (y/n): ": "Möchtest du die Tokens zur späteren Verwendung in einer Datei im aktuellen Verzeichnis speichern? (y/n): ",
-  "Do you allow collection of non-personalised usage data to improve the script (check the README.md for details)? (y/n): ": "Erlaubst du die Sammlung nicht-personalisierter Nutzungsdaten zur Verbesserung des Skripts (Details in README.md)? (y/n): ",
-  "Telemetry enabled. Thank you so much for your support, bro.": "Telemetrie aktiviert. Vielen Dank für deine Unterstützung!",
-  "Naww, I've counted on you! =( I may ask again later, OK? =)": "Nawww, ich habe auf dich gezählt! =( Vielleicht frage ich später nochmal, ok? =)",
-  "Telemetry disabled. (ENTER): ": "Telemetrie deaktiviert. (ENTER): ",
   "Unknown option code": "Unbekannter Optionscode",
 
   "Error: Received empty response from Tesla API. Please try again later." : "Fehler: Leere Antwort von der Tesla-API erhalten. Bitte versuchen Sie es später erneut.",
@@ -82,7 +78,7 @@
   "Range per Year": "Reichweite pro Jahr",
   "Financed Amount": "Finanzierter Betrag",
   "Approved Amount": "Genehmigter Betrag",
-  "BOTTOM LINE HELP": "Probiere --help aus, um die neuen Funktionen anzuzeigen, die für dich interessant sein könnten =)",
+  "BOTTOM LINE HELP": "Probiere --help aus, um die neuen Funktionen anzuzeigen, die für dich interessant sein könnten",
   "BOTTOM LINE TEXT IN CLIPBOARD": "Eine Version der Ausgabe zum Teilen wurde in die Zwischenablage kopiert!",
   "BOTTOM LINE CLIPBOARD NOT WORKING": "Um automatisch eine geeignete Version der Ausgabe zum Teilen in Ihre Zwischenablage zu kopieren, lesen Sie bitte die Installationsanleitung für weitere Details",
 
