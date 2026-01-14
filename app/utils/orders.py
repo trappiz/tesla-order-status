@@ -351,7 +351,7 @@ def generate_share_output(detailed_orders):
     if HAS_PYPERCLIP:
         # Create advertising text but don't print it
         ad_text = (f"\n{strip_color('Do you want to share your data and compete with others?')}\n"
-                   f"{strip_color('Check it out on GitHub: https://github.com/chrisi51/tesla-order-status')}")
+                   f"{strip_color('Check it out on GitHub: https://github.com/trappiz/tesla-order-status')}")
         pyperclip.copy("```yaml\n" + strip_color(output_capture.getvalue()) + ad_text + "\n```")
 
     return output_capture.getvalue()
@@ -489,7 +489,7 @@ def print_bottom_line() -> None:
         print(f"\n{color_text(t('BOTTOM LINE TEXT IN CLIPBOARD'), '93')}")
     else:
         print(f"\n{color_text(t('BOTTOM LINE CLIPBOARD NOT WORKING'), '91')}")
-        print(f"{color_text('https://github.com/chrisi51/tesla-order-status?tab=readme-ov-file#general', '91')}")
+        print(f"{color_text('https://github.com/trappiz/tesla-order-status?tab=readme-ov-file#general', '91')}")
 
 
 # ---------------------------

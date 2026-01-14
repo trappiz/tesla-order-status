@@ -49,5 +49,5 @@ if __name__ == "__main__":
         print("\n\nYou can attempt to fix the installation by running:")
         print("hotfix.py instead of tesla_order_status.py")
         print("\nIf the problem persists, please create an issue including the complete output of tesla_order_status.py")
-        print("GitHub Issues: https://github.com/chrisi51/tesla-order-status/issues")
+        print("GitHub Issues: https://github.com/trappiz/tesla-order-status/issues")
         sys.exit(1)

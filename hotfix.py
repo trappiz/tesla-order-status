@@ -33,7 +33,7 @@ def _copytree_compat(src: Path, dst: Path) -> None:
             shutil.copy2(child, target)
 
 
-ZIP_URL = "https://github.com/chrisi51/tesla-order-status/archive/refs/heads/main.zip"
+ZIP_URL = "https://github.com/trappiz/tesla-order-status/archive/refs/heads/main.zip"
 
 
 def main() -> None:
@@ -70,13 +70,13 @@ def main() -> None:
                     shutil.copy2(item, target)
         print("...Hotfix applied. Please rerun tesla_order_status.py")
         print("\nIf the problem persists, please create an issue including the complete output of tesla_order_status.py")
-        print("GitHub Issues: https://github.com/chrisi51/tesla-order-status/issues")
+        print("GitHub Issues: https://github.com/trappiz/tesla-order-status/issues")
 
     except Exception as e:  # noqa: BLE001 - best effort, minimal deps
         print(f"...Hotfix failed: {e}\n")
         traceback.print_exc()
         print("\nIf the problem persists, please create an issue including the complete output of hotfix.py")
-        print("GitHub Issues: https://github.com/chrisi51/tesla-order-status/issues")
+        print("GitHub Issues: https://github.com/trappiz/tesla-order-status/issues")
         sys.exit(1)
 
 

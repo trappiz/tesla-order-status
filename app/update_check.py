@@ -6,7 +6,7 @@ check_files_fixed_list.py
 The files to check are stored in FILES_TO_CHECK (array).
 Compares the newest mtime from this list with the last commit
 of the fixed Atom feed:
-  https://github.com/chrisi51/tesla-order-status/commits/main.atom
+  https://github.com/trappiz/tesla-order-status/commits/main.atom
 
 Exit codes:
   0 -> everything up to date
@@ -58,7 +58,7 @@ FILES_TO_CHECK: List[Path] = [
 ]
 
 BRANCH = "main"
-FEED_URL = "https://github.com/chrisi51/tesla-order-status"
+FEED_URL = "https://github.com/trappiz/tesla-order-status"
 ZIP_URL = f"{FEED_URL}/archive/refs/heads/{BRANCH}.zip"
 REQUEST_TIMEOUT = 10  # Sekunden
 
