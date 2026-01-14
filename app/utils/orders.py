@@ -32,7 +32,6 @@ from app.utils.history import (
 from app.utils.locale import t, LANGUAGE, use_default_language
 import app.utils.history as history_module
 from app.utils.params import DETAILS_MODE, SHARE_MODE, STATUS_MODE, CACHED_MODE, ORDER_FILTER
-from app.utils.telemetry import track_usage
 from app.utils.timeline import print_timeline
 from app.utils.option_codes import get_option_entry
 
@@ -133,7 +132,7 @@ def _ensure_order_map(raw_orders: Any) -> OrderMap:
 
 
 def _orders_map_to_list(orders: Any) -> List[DetailedOrder]:
-    """Convert an order collection back to a list (for legacy persistence/telemetry)."""
+    """Convert an order collection back to a list (for legacy persistence)."""
     if isinstance(orders, list):
         return orders
     if isinstance(orders, MutableMapping):

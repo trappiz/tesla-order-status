@@ -9,7 +9,6 @@ from typing import Any, Dict
 # -------------------------
 APP_VERSION = '9.99.9-9999' # we can use a fake version here, as the API does not check it strictly
 TODAY = time.strftime('%Y-%m-%d')
-TELEMETRIC_URL = "https://www.tesla-order-status-tracker.de/push/telemetry.php"
 OPTION_CODES_URL = "https://www.tesla-order-status-tracker.de/push/option_codes.php"
 VERSION = "p1.2.1"
 

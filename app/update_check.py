@@ -52,7 +52,6 @@ FILES_TO_CHECK: List[Path] = [
     APP_DIR / "utils" / "migration.py",
     APP_DIR / "utils" / "orders.py",
     APP_DIR / "utils" / "params.py",
-    APP_DIR / "utils" / "telemetry.py",
     APP_DIR / "utils" / "timeline.py",
     APP_DIR / "migrations" / "2025-08-23-history.py",
     APP_DIR / "migrations" / "2025-08-30-datafolders.py",

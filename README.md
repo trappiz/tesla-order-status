@@ -2,7 +2,7 @@
 
 [![Stars](https://img.shields.io/github/stars/trappiz/tesla-order-status?style=social)](https://github.com/trappiz/tesla-order-status/stargazers) [![Forks](https://img.shields.io/github/forks/trappiz/tesla-order-status?style=social)](https://github.com/trappiz/tesla-order-status/network/members) [![Issues](https://img.shields.io/github/issues/trappiz/tesla-order-status?style=social)](https://github.com/trappiz/tesla-order-status/issues)
 
-[![Referral](https://img.shields.io/badge/support-via_Tesla_referral-cc0000?logo=tesla&logoColor=white)](https://ts.la/)
+[![Referral](https://img.shields.io/badge/support-via_Tesla_referral-cc0000?logo=tesla&logoColor=white)](https://ts.la/niklas278884)
 
 # Tesla Order Status Tracker (TOST) 🚗📦
 Stay in control of your Tesla order from the moment you place it until delivery. This open-source Python tool gives you direct access to the Tesla API so you always know what is happening with your vehicle.
@@ -24,16 +24,15 @@ Stay in control of your Tesla order from the moment you place it until delivery.
 - 📋 **One‑click share mode**: Anonymized clipboard for forums and social media
 - 🔁 **Multi-order ready**: Handles multiple Tesla orders at once, with `--order <reference>` to focus on a single one.
 - 🧩 **Modular & expandable**: Option codes, languages and features can be flexibly expanded.
-- 🔐 **Privacy-focused**: Tokens and settings remain on your device – telemetry is completely optional.
+- 🔐 **Privacy-focused**: Tokens and settings remain on your device.
 
 The goal is to give users more transparency and control over the ordering process – without depending on external services.
 
 ## 🚀 Quick Links
 - 💬 Community & Support-Chat: https://chat.tesla-order-status-tracker.de
 - ☕ Support via PayPal: https://www.paypal.com/paypalme/trappiz
-- 🚗 Order a Tesla and support me: https://ts.la/christian906959
+- 🚗 Order a Tesla and support me: https://ts.la/niklas278884
 - 📦 Direct download as ZIP: https://github.com/trappiz/tesla-order-status/archive/refs/heads/main.zip
-- 🖥️ GUI version: https://www.tesla-order-status-tracker.de
 
 ## Get Started
 Download the complete project to your machine. If you are unsure how, you can grab the ZIP archive directly from GitHub: https://github.com/trappiz/tesla-order-status/archive/refs/heads/main.zip
@@ -182,39 +181,17 @@ Order Timeline:
 - 2025-08-23: new Delivery Window: 10 September - 30 September
 ```
 
-## Telemetry
-To better understand how the tool is used and to improve future development, the script can optionally send **anonymous usage statistics**.
-On the very first launch you will be asked for consent. If you decline, nothing is sent. Declining has no negative impact other than not contributing to usage statistics.
-
-### What information is sent?
-
-- A randomly generated fingerprint that identifies your installation (not tied to your identity)
-- For each tracked order: a pseudonymized order reference number and the associated Tesla model
-- Which command line flags were used (e.g. `--details`, `--share`, `--status`, `--cached`)
-- The operating system language (e.g. `en_US`)
-
-### How is your data protected?
-- **No personal data** such as VINs, names, email addresses, tokens, credentials or raw order IDs ever leave your machine.
-- Order IDs are **irreversibly pseudonymized** locally using a secret-based HMAC before transmission. Even if someone had access to the data, it cannot be reversed into the original ID.
-- The installation fingerprint is just a random string generated once on your system. It contains no information about your device or account.
-- All traffic is sent over encrypted HTTPS.
-- Data is used exclusively in aggregate to understand general usage patterns, not to track individual users.
-
-### Controlling telemetry
-You are always in control: telemetry is opt-in. Consent is requested on first run, and you can disable or revoke it at any time by editing the configuration file (`data/private/settings.json`) and setting `"telemetry-consent": false`.
-
 ## Issues
 If you have any issues, running the script or getting error messages, pleas feel free to ask for help in the [issues](https://github.com/trappiz/tesla-order-status/issues) section or pm me at the [tff-forum](https://tff-forum.de/u/trappiz/summary)
 
 
 ## Disclaimer
 - The script runs locally on your machine.
-- No connection to me is made at any time unless you explicitly allow telemetry as described above.
 - You need to log in via browser and return the resulting URL to the script to extract the login token used for the API.
 - The script only uses the token to work with for the current session.
-- With your permission the script stores the token on your hard disk.
+- With your permission the script stores the token on your machine.
 
 ## Support & Contact
-If you want to support the project, you can use my link on your next Tesla order: https://ts.la/
+If you want to support the project, you can use my link on your next Tesla order: https://ts.la/niklas278884
 
 As this is a fork I have to say thanks to https://github.com/niklaswa/tesla-order-status for the initial script.
