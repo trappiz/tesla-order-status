@@ -643,16 +643,3 @@ def track_usage(orders: List[dict]) -> None:
         except Exception:
             # Swallow errors to keep endpoint stable
             pass
-
-def _collect_option_codes(orders: List[dict]) -> List[str]:
-    """Extract unique option codes from orders."""
-    codes = set()
-    for order in orders:
-        order_data = order.get("order", {}) if isinstance(order, dict) else {}
-        raw_options = order_data.get("mktOptions")
-        if isinstance(raw_options, str):
-            for part in raw_options.split(","):
-                normalized = _normalize_option_code(part)
-                if normalized:
-                    codes.add(normalized)
-    return sorted(codes)
