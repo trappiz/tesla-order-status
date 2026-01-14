@@ -12,7 +12,7 @@ try:
 except ImportError:
     HAS_PYPERCLIP = False
 
-from app.config import APP_VERSION, ORDERS_FILE, TESLA_STORES, TODAY, OPTION_CODES_URL, VERSION, cfg as Config
+from app.config import APP_VERSION, ORDERS_FILE, TESLA_STORES, TODAY, OPTION_CODES_URL, VERSION, AD_INFO_CLIPBOARD, cfg as Config
 from app.utils.colors import color_text, strip_color
 from app.utils.connection import request_with_retry
 from app.utils.helpers import (
@@ -315,7 +315,8 @@ def _render_share_output(detailed_orders):
         print(color_text(header, '94'))
 
 
-        model = paint = interior = "unknown"
+        model = paint = interior = wheels = "unknown"
+        wheel_sizes = set()
 
         decoded_options = decode_option_codes(order.get('mktOptions', ''))
         if decoded_options:
@@ -324,7 +325,14 @@ def _render_share_output(detailed_orders):
                 category = entry.get('category')
                 cleaned_description = description.strip()
 
-                if category == 'paints' and cleaned_description:
+                if cleaned_description and code.startswith("W"):
+                    size_match = re.search(r"\b(\d{2})\s*\"", cleaned_description)
+                    if size_match:
+                        wheel_sizes.add(f'{size_match.group(1)}"')
+
+                if category == "wheels" and cleaned_description:
+                    wheels = cleaned_description
+                elif category == 'paints' and cleaned_description:
                     paint = cleaned_description.replace('Metallic', '').replace('Multi-Coat','').strip()
                 elif category in {'interiors', 'interior', 'seats'} and cleaned_description:
                     interior = cleaned_description
@@ -333,6 +341,8 @@ def _render_share_output(detailed_orders):
                         paint = cleaned_description
                     if interior == "unknown" and code.startswith(('IP', 'IN', 'IW', 'IX', 'IY')):
                         interior = cleaned_description
+                    if wheels == "unknown" and code.startswith('W'):
+                        wheels = cleaned_description
 
                 if category in {'models', 'model'} or ('Model' in cleaned_description and len(cleaned_description) > 10):
                     match = re.match(r'(Model [YSX3])(?:.*?((?:AWD|RWD) (?:LR|SR|P)))?.*?$', cleaned_description)
@@ -343,9 +353,13 @@ def _render_share_output(detailed_orders):
                             model = f"{model_name} - {config_suffix}".strip()
                         else:
                             model = cleaned_description.strip()
+        if wheel_sizes:
+            wheels = "/".join(sorted(wheel_sizes, key=lambda x: int(x.rstrip('"'))))
 
         if model and paint and interior:
             msg = f"{model} / {paint} / {interior}"
+            if wheels != "unknown":
+                msg = f"{msg} / {wheels}"
             print(f"- {msg}")
 
         if scheduling.get('deliveryAddressTitle'):
