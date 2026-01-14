@@ -1,15 +1,11 @@
-[![Active](https://img.shields.io/badge/status-actively_maintained-darkgreen)](#)  [![Python](https://img.shields.io/badge/python-3.x-blue?logo=python)](#)  [![Platform](https://img.shields.io/badge/platform-cross--platform-lightgrey)](#) [![Telemetry](https://img.shields.io/badge/telemetry-opt--in-darkgreen)](#) [![Privacy](https://img.shields.io/badge/privacy-100%25_local-darkgreen)](#)
+[![Active](https://img.shields.io/badge/status-actively_maintained-darkgreen)](#) [![Python](https://img.shields.io/badge/python-3.x-blue?logo=python)](#) [![Platform](https://img.shields.io/badge/platform-cross--platform-lightgrey)](#) [![Privacy](https://img.shields.io/badge/privacy-100%25_local-darkgreen)](#)
 
-[![Stars](https://img.shields.io/github/stars/chrisi51/tesla-order-status?style=social)](https://github.com/chrisi51/tesla-order-status/stargazers) [![Forks](https://img.shields.io/github/forks/chrisi51/tesla-order-status?style=social)](https://github.com/chrisi51/tesla-order-status/network/members) [![Issues](https://img.shields.io/github/issues/chrisi51/tesla-order-status?style=social)](https://github.com/chrisi51/tesla-order-status/issues)
+[![Stars](https://img.shields.io/github/stars/trappiz/tesla-order-status?style=social)](https://github.com/trappiz/tesla-order-status/stargazers) [![Forks](https://img.shields.io/github/forks/trappiz/tesla-order-status?style=social)](https://github.com/trappiz/tesla-order-status/network/members) [![Issues](https://img.shields.io/github/issues/trappiz/tesla-order-status?style=social)](https://github.com/trappiz/tesla-order-status/issues)
 
-[![Chat](https://img.shields.io/badge/chat-Community-blue?logo=wechat)](https://chat.tesla-order-status-tracker.de) [![Coffee](https://img.shields.io/badge/buy_me-a_coffee-cc0000?logo=buymeacoffee&logoColor=white)](https://www.paypal.com/paypalme/chrisi51) [![Referral](https://img.shields.io/badge/support-via_Tesla_referral-cc0000?logo=tesla&logoColor=white)](https://ts.la/christian906959)
-
-> Prefer reading in German?<br>
-> [Hier geht’s zur deutschen Version des README](README_DE.md)
+[![Referral](https://img.shields.io/badge/support-via_Tesla_referral-cc0000?logo=tesla&logoColor=white)](https://ts.la/)
 
 # Tesla Order Status Tracker (TOST) 🚗📦
 Stay in control of your Tesla order from the moment you place it until delivery. This open-source Python tool gives you direct access to the Tesla API so you always know what is happening with your vehicle.
-> 🖥️ Prefer a GUI? check my TOST app: https://www.tesla-order-status-tracker.de
 
 ## Table of Contents
 1. [Why You'll Love It](#why-youll-love-it)
@@ -18,7 +14,6 @@ Stay in control of your Tesla order from the moment you place it until delivery.
 4. [Usage](#usage)
 5. [Configuration](#configuration)
 6. [History & Preview](#history--preview)
-7. [Telemetry](#telemetry)
 8. [Disclaimer](#disclaimer)
 9. [Support & Contact](#support--contact)
 
@@ -35,13 +30,13 @@ The goal is to give users more transparency and control over the ordering proces
 
 ## 🚀 Quick Links
 - 💬 Community & Support-Chat: https://chat.tesla-order-status-tracker.de
-- ☕ Support via PayPal: https://www.paypal.com/paypalme/chrisi51
+- ☕ Support via PayPal: https://www.paypal.com/paypalme/trappiz
 - 🚗 Order a Tesla and support me: https://ts.la/christian906959
-- 📦 Direct download as ZIP: https://github.com/chrisi51/tesla-order-status/archive/refs/heads/main.zip
+- 📦 Direct download as ZIP: https://github.com/trappiz/tesla-order-status/archive/refs/heads/main.zip
 - 🖥️ GUI version: https://www.tesla-order-status-tracker.de
 
 ## Get Started
-Download the complete project to your machine. If you are unsure how, you can grab the ZIP archive directly from GitHub: https://github.com/chrisi51/tesla-order-status/archive/refs/heads/main.zip
+Download the complete project to your machine. If you are unsure how, you can grab the ZIP archive directly from GitHub: https://github.com/trappiz/tesla-order-status/archive/refs/heads/main.zip
 > ⚠️ Do not run single scripts without the rest of the repository. Everything is meant to work together.
 
 ## Installation
@@ -209,7 +204,7 @@ On the very first launch you will be asked for consent. If you decline, nothing 
 You are always in control: telemetry is opt-in. Consent is requested on first run, and you can disable or revoke it at any time by editing the configuration file (`data/private/settings.json`) and setting `"telemetry-consent": false`.
 
 ## Issues
-If you have any issues, running the script or getting error messages, pleas feel free to ask for help in the [issues](https://github.com/chrisi51/tesla-order-status/issues) section or pm me at the [tff-forum](https://tff-forum.de/u/chrisi51/summary)
+If you have any issues, running the script or getting error messages, pleas feel free to ask for help in the [issues](https://github.com/trappiz/tesla-order-status/issues) section or pm me at the [tff-forum](https://tff-forum.de/u/trappiz/summary)
 
 
 ## Disclaimer
@@ -220,10 +215,6 @@ If you have any issues, running the script or getting error messages, pleas feel
 - With your permission the script stores the token on your hard disk.
 
 ## Support & Contact
-If you want to support the project, you can use my link on your next Tesla order: https://ts.la/christian906959
-
-Or just buy me a coffee: https://www.paypal.com/paypalme/chrisi51
+If you want to support the project, you can use my link on your next Tesla order: https://ts.la/
 
 As this is a fork I have to say thanks to https://github.com/niklaswa/tesla-order-status for the initial script.
-
-Come say hi in the community chat: https://chat.tesla-order-status-tracker.de
