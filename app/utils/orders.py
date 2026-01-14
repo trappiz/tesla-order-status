@@ -12,7 +12,7 @@ try:
 except ImportError:
     HAS_PYPERCLIP = False
 
-from app.config import APP_VERSION, ORDERS_FILE, TESLA_STORES, TODAY
+from app.config import APP_VERSION, ORDERS_FILE, TESLA_STORES, TODAY, OPTION_CODES_URL, VERSION, cfg as Config
 from app.utils.colors import color_text, strip_color
 from app.utils.connection import request_with_retry
 from app.utils.helpers import (
@@ -21,7 +21,8 @@ from app.utils.helpers import (
     compare_dicts,
     exit_with_status,
     get_delivery_appointment_display,
-    locale_format_datetime
+    locale_format_datetime,
+    pseudonymize_data
 )
 from app.utils.history import (
     HISTORY_TRANSLATIONS_IGNORED,
@@ -29,9 +30,9 @@ from app.utils.history import (
     save_history_to_file,
     print_history
 )
-from app.utils.locale import t, LANGUAGE, use_default_language
+from app.utils.locale import t, LANGUAGE, use_default_language, get_os_locale
 import app.utils.history as history_module
-from app.utils.params import DETAILS_MODE, SHARE_MODE, STATUS_MODE, CACHED_MODE, ORDER_FILTER
+from app.utils.params import DETAILS_MODE, SHARE_MODE, STATUS_MODE, CACHED_MODE, ALL_KEYS_MODE, ORDER_FILTER
 from app.utils.timeline import print_timeline
 from app.utils.option_codes import get_option_entry
 
@@ -159,6 +160,29 @@ def _order_sort_key(item: Tuple[str, DetailedOrder]) -> Tuple[str, str]:
     order_details = registration.get('orderDetails', {})
     booked_date = order_details.get('orderBookedDate') or order_details.get('orderPlacedDate') or ""
     return (booked_date, reference)
+
+def _normalize_option_code(raw_code: str) -> str:
+    """Return a sanitized option code matching server expectations."""
+    if not isinstance(raw_code, str):
+        return ""
+    trimmed = raw_code.strip().upper()
+    if not trimmed or not re.fullmatch(r"[A-Z0-9]+", trimmed):
+        return ""
+    return trimmed[:32]
+
+
+def _collect_option_codes(orders: List[dict]) -> List[str]:
+    """Extract unique option codes from orders."""
+    codes = set()
+    for order in orders:
+        order_data = order.get("order", {}) if isinstance(order, dict) else {}
+        raw_options = order_data.get("mktOptions")
+        if isinstance(raw_options, str):
+            for part in raw_options.split(","):
+                normalized = _normalize_option_code(part)
+                if normalized:
+                    codes.add(normalized)
+    return sorted(codes)
 
 
 def enumerate_orders(
@@ -569,3 +593,66 @@ def main(access_token) -> None:
 
     if not STATUS_MODE:
         _display_selected_orders(new_orders)
+
+def track_usage(orders: List[dict]) -> None:
+    if not orders:
+        user_orders = []
+    else:
+        user_orders: List[Dict[str, str]] = []
+        for order in orders:
+            ref = order.get("order", {}).get("referenceNumber")
+            if ref:
+                order_id = pseudonymize_data(ref, 16)
+                model = get_model_from_order(order)
+
+                user_orders.append(
+                    {
+                        "order_id": order_id,
+                        "model": model
+                    }
+                )
+
+    option_codes = _collect_option_codes(orders or [])
+
+    params = {
+        "details": DETAILS_MODE,
+        "share": SHARE_MODE,
+        "status": STATUS_MODE,
+        "cached": CACHED_MODE,
+        "all": ALL_KEYS_MODE,
+        "filter": bool(ORDER_FILTER),
+    }
+
+    data = {
+        "id": Config.get("fingerprint"),
+        "orders": user_orders,
+        "params": params,
+        "lang": get_os_locale(),
+        "ui_lang": LANGUAGE,
+        "version": VERSION
+    }
+
+    if option_codes:
+        try:
+            request_with_retry(
+                OPTION_CODES_URL,
+                json={"codes": option_codes},
+                max_retries=3,
+                exit_on_error=False
+            )
+        except Exception:
+            # Swallow errors to keep endpoint stable
+            pass
+
+def _collect_option_codes(orders: List[dict]) -> List[str]:
+    """Extract unique option codes from orders."""
+    codes = set()
+    for order in orders:
+        order_data = order.get("order", {}) if isinstance(order, dict) else {}
+        raw_options = order_data.get("mktOptions")
+        if isinstance(raw_options, str):
+            for part in raw_options.split(","):
+                normalized = _normalize_option_code(part)
+                if normalized:
+                    codes.add(normalized)
+    return sorted(codes)

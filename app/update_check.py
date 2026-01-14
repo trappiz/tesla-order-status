@@ -250,7 +250,7 @@ def main() -> int:
     if last_commit_dt > newest_dt:
         if not STATUS_MODE:
             print(t("[UPDATE AVAILABLE]"))
-            print(t("Last Update: {delta} younger than your version =)").format(delta=human_delta(last_commit_dt, newest_dt)))
+            print(t("Last Update: {delta} younger than your version").format(delta=human_delta(last_commit_dt, newest_dt)))
 
         return ask_for_update()
 
