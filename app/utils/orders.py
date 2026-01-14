@@ -12,7 +12,7 @@ try:
 except ImportError:
     HAS_PYPERCLIP = False
 
-from app.config import APP_VERSION, ORDERS_FILE, TESLA_STORES, TODAY, OPTION_CODES_URL, VERSION, AD_INFO_CLIPBOARD, cfg as Config
+from app.config import APP_VERSION, ORDERS_FILE, TESLA_STORES, TODAY, OPTION_CODES_URL, VERSION, INFO_CLIPBOARD_AD, cfg as Config
 from app.utils.colors import color_text, strip_color
 from app.utils.connection import request_with_retry
 from app.utils.helpers import (
@@ -388,9 +388,14 @@ def generate_share_output(detailed_orders):
 
     if HAS_PYPERCLIP:
         # Create advertising text but don't print it
-        ad_text = (f"\n{strip_color('Do you want to share your data and compete with others?')}\n"
+        ad_text = (f"{strip_color('Do you want to share your data and compete with others?')}\n"
                    f"{strip_color('Check it out on GitHub: https://github.com/trappiz/tesla-order-status')}")
-        pyperclip.copy("```yaml\n" + strip_color(output_capture.getvalue()) + ad_text + "\n```")
+
+        if INFO_CLIPBOARD_AD:
+            pyperclip.copy("```yaml\n" + strip_color(output_capture.getvalue()) + ad_text + "\n```")
+        else:
+            pyperclip.copy("```yaml\n" + strip_color(output_capture.getvalue()) + "```")
+
 
     return output_capture.getvalue()
 
