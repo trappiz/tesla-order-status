@@ -43,7 +43,7 @@
 
   "Error: Received empty response from Tesla API. Please try again later." : "Fehler: Leere Antwort von der Tesla-API erhalten. Bitte versuchen Sie es später erneut.",
   "> Orders saved to '{file}'": "Bestellungen gespeichert unter '{file}'",
-  "unknown": "unbekannt",
+  "Unknown": "Unbekannt",
   "new": "(neu)",
   "removed": "entfernt",
   "Order Details": "Bestelldetails",

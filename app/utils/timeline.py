@@ -36,7 +36,7 @@ def _split_timestamp(value: Any) -> Tuple[str, Optional[str]]:
         return date_display, time_display if time_display and time_display != "00:00" else None
     if isinstance(value, str) and value.strip():
         return value.strip(), None
-    return t("unknown"), None
+    return t("Unknown"), None
 
 
 def _sort_timeline_entries(entries: List[Dict[str, Any]]) -> List[Dict[str, Any]]:

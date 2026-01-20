@@ -43,7 +43,7 @@
 
   "Error: Received empty response from Tesla API. Please try again later.": "Fel: Tomt svar mottaget från Tesla API. Försök igen senare.",
   "> Orders saved to '{file}'": "> Beställningar sparade i '{file}'",
-  "unknown": "okänd",
+  "Unknown": "Okänd",
   "new": "ny",
   "removed": "borttagen",
   "Order Details": "Orderdetaljer",

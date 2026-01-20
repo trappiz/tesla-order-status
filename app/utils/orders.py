@@ -272,7 +272,7 @@ def get_order(order_id):
 def get_model_from_order(detailed_order) -> str:
     order = detailed_order.get('order', {})
     decoded_options = decode_option_codes(order.get('mktOptions', ''))
-    model = "unknown"
+    model = "Unknown"
     for _, description in decoded_options:
         if 'Model' in description:
 
@@ -306,7 +306,7 @@ def _render_share_output(detailed_orders):
         order_details = detailed_order['details']
         tasks = order_details.get('tasks', {})
         scheduling = tasks.get('scheduling', {})
-        status_text = order.get('orderStatus', t('unknown'))
+        status_text = order.get('orderStatus', t('Unknown'))
 
         if total_orders > 1:
             header = f"#{idx} {t('Order Details')}:"
@@ -315,7 +315,7 @@ def _render_share_output(detailed_orders):
         print(color_text(header, '94'))
 
 
-        model = paint = interior = wheels = "unknown"
+        model = paint = interior = wheels = "Unknown"
         wheel_sizes = set()
 
         decoded_options = decode_option_codes(order.get('mktOptions', ''))
@@ -337,11 +337,11 @@ def _render_share_output(detailed_orders):
                 elif category in {'interiors', 'interior', 'seats'} and cleaned_description:
                     interior = cleaned_description
                 elif category is None and cleaned_description:
-                    if paint == "unknown" and code.startswith(('PP', 'PN', 'PS', 'PA')):
+                    if paint == "Unknown" and code.startswith(('PP', 'PN', 'PS', 'PA')):
                         paint = cleaned_description
-                    if interior == "unknown" and code.startswith(('IP', 'IN', 'IW', 'IX', 'IY')):
+                    if interior == "Unknown" and code.startswith(('IP', 'IN', 'IW', 'IX', 'IY')):
                         interior = cleaned_description
-                    if wheels == "unknown" and code.startswith('W'):
+                    if wheels == "Unknown" and code.startswith('W'):
                         wheels = cleaned_description
 
                 if category in {'models', 'model'} or ('Model' in cleaned_description and len(cleaned_description) > 10):
@@ -358,7 +358,7 @@ def _render_share_output(detailed_orders):
 
         if model and paint and interior:
             msg = f"{model} / {paint} / {interior}"
-            if wheels != "unknown":
+            if wheels != "Unknown":
                 msg = f"{msg} / {wheels}"
             print(f"- {msg}")
 
@@ -423,7 +423,7 @@ def display_orders(detailed_orders):
         print(f"{color_text(t('Order Details') + ':', '94')}")
         print(f"{color_text('- ' + t('Order ID') + ':', '94')} {order['referenceNumber']}")
         print(f"{color_text('- ' + t('Status') + ':', '94')} {order['orderStatus']}")
-        print(f"{color_text('- ' + t('VIN') + ':', '94')} {order.get('vin', t('unknown'))}")
+        print(f"{color_text('- ' + t('VIN') + ':', '94')} {order.get('vin', t('Unknown'))}")
 
         decoded_options = decode_option_codes(order.get('mktOptions', ''))
         if decoded_options:
@@ -441,12 +441,12 @@ def display_orders(detailed_orders):
         location_id = order_info.get('vehicleRoutingLocation')
         store = TESLA_STORES.get(str(location_id) if location_id is not None else '', {})
         if store:
-            print(f"{color_text('- ' + t('Routing Location') + ':', '94')} {store['display_name']} ({location_id or t('unknown')})")
+            print(f"{color_text('- ' + t('Routing Location') + ':', '94')} {store['display_name']} ({location_id or t('Unknown')})")
             if DETAILS_MODE:
                 address = store.get('address', {})
-                print(f"    {color_text(t('Address') + ':', '94')} {address.get('address_1', t('unknown'))}")
-                print(f"    {color_text(t('City') + ':', '94')} {address.get('city', t('unknown'))}")
-                print(f"    {color_text(t('Postal Code') + ':', '94')} {address.get('postal_code', t('unknown'))}")
+                print(f"    {color_text(t('Address') + ':', '94')} {address.get('address_1', t('Unknown'))}")
+                print(f"    {color_text(t('City') + ':', '94')} {address.get('city', t('Unknown'))}")
+                print(f"    {color_text(t('Postal Code') + ':', '94')} {address.get('postal_code', t('Unknown'))}")
                 if store.get('phone'):
                     print(f"    {color_text(t('Phone') + ':', '94')} {store['phone']}")
                 if store.get('store_email'):
@@ -470,7 +470,7 @@ def display_orders(detailed_orders):
             fallback = locale_format_datetime(condensed) or condensed
             print(f"{color_text('- ' + t('Delivery Appointment Date') + ':', '94')} {fallback}")
         else:
-            print(f"{color_text('- ' + t('Delivery Window') + ':', '94')} {scheduling.get('deliveryWindowDisplay', t('unknown'))}")
+            print(f"{color_text('- ' + t('Delivery Window') + ':', '94')} {scheduling.get('deliveryWindowDisplay', t('Unknown'))}")
 
         if DETAILS_MODE:
             print(f"\n{color_text(t('Financing Information') + ':', '94')}")
