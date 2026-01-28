@@ -236,7 +236,19 @@ def get_os_locale() -> Optional[str]:
     return None
 
 if STATUS_MODE:
-    LANGUAGE = DEFAULT_LANG
+    # Status mode should behave like normal language detection, but remain silent.
+    # Look at making this a function instead...
+    LANGUAGE = Config.get("language")
+    if not LANGUAGE:
+        os_lang = get_os_locale()
+        if os_lang:
+            lang_code = os_lang.split("_")[0].lower()
+            if (LANG_DIR / f"{lang_code}.json").exists():
+                LANGUAGE = lang_code
+            else:
+                LANGUAGE = DEFAULT_LANG
+        else:
+
 else:
     LANGUAGE = Config.get("language")
     if not LANGUAGE:
