@@ -248,7 +248,7 @@ if STATUS_MODE:
             else:
                 LANGUAGE = DEFAULT_LANG
         else:
-
+            LANGUAGE = DEFAULT_LANG
 else:
     LANGUAGE = Config.get("language")
     if not LANGUAGE:
