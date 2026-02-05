@@ -53,8 +53,13 @@ For a clean setup, create a virtual environment before installing dependencies:
 ```sh
 # create the environment
 python3 -m venv .venv
-# activate it
+
+# activate it (bash)
 source .venv/bin/activate
+
+# activate it (fish)
+source .venv/bin/activate.fish
+
 # install dependencies just for this project
 python3 -m pip install requests pyperclip
 ```
