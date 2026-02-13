@@ -9,22 +9,51 @@ from app.config import PUBLIC_DIR, SETTINGS_FILE, cfg as Config
 from app.utils.colors import color_text
 
 LANG_DIR = PUBLIC_DIR / "lang"
-DEFAULT_LANG = "en"
+LOCALE = "en_US"
+LANGUAGE = "en"
+COUNTRY = "US"
 
 # Determine if we're running in status mode early to avoid banner prints (can't just import params.py cause of looping)
 STATUS_MODE = "--status" in sys.argv
 
+_SOURCE_PRIORITY = {
+    "static": 0,
+    "system": 1,
+    "tesla": 2,
+}
+
+
+def _get_language_source() -> Optional[str]:
+    source = Config.get("language_source")
+    return source if source in _SOURCE_PRIORITY else None
+
+
+def _can_override_language(new_source: str) -> bool:
+    current = _get_language_source()
+    if current is None:
+        return True
+    return _SOURCE_PRIORITY.get(new_source, -1) > _SOURCE_PRIORITY.get(current, -1)
+
+
+def _get_configured_locale() -> Optional[str]:
+    if _get_language_source() is None:
+        return None
+    configured = Config.get("language")
+    if not isinstance(configured, str) or not configured.strip():
+        return None
+    return normalize_locale(configured)
+
 def _load_translations(lang: str) -> dict:
     """Load translation mappings for *lang* with English fallback."""
     translations = {}
-    default_path = LANG_DIR / f"{DEFAULT_LANG}.json"
+    default_path = LANG_DIR / "en.json"
     if default_path.exists():
         try:
             translations.update(json.loads(default_path.read_text(encoding="utf-8")))
         except Exception:
             pass
     lang_code = (lang or "").split("_")[0].lower()
-    if lang_code and lang_code != DEFAULT_LANG:
+    if lang_code and lang_code != "en":
         lang_path = LANG_DIR / f"{lang_code}.json"
         if lang_path.exists():
             try:
@@ -88,6 +117,7 @@ LANG_DEFAULT_REGION = {
 }
 
 _BCP47_RE = re.compile(r"^([a-zA-Z]{2,3})(?:[_-]([A-Za-z]{2}))?(?:\..*)?$")
+_LOCALE_STRICT_RE = re.compile(r"^[a-z]{2}_[A-Z]{2}$")
 
 
 def _strip_encoding(tag: str) -> str:
@@ -199,6 +229,10 @@ def normalize_locale(code: str) -> Optional[str]:
 
     return None
 
+def _is_valid_locale(value: Optional[str]) -> bool:
+    if not isinstance(value, str):
+        return False
+    return bool(_LOCALE_STRICT_RE.match(value))
 
 def get_os_locale() -> Optional[str]:
     """Return the system locale as 'll' or 'll_RR' where possible."""
@@ -235,42 +269,65 @@ def get_os_locale() -> Optional[str]:
 
     return None
 
-if STATUS_MODE:
-    # Status mode should behave like normal language detection, but remain silent.
-    # Look at making this a function instead...
-    LANGUAGE = Config.get("language")
-    if not LANGUAGE:
-        os_lang = get_os_locale()
-        if os_lang:
-            lang_code = os_lang.split("_")[0].lower()
-            if (LANG_DIR / f"{lang_code}.json").exists():
-                LANGUAGE = lang_code
-            else:
-                LANGUAGE = DEFAULT_LANG
-        else:
-            LANGUAGE = DEFAULT_LANG
-else:
-    LANGUAGE = Config.get("language")
-    if not LANGUAGE:
-        os_lang = get_os_locale()
-        if os_lang:
-            lang_code = os_lang.split("_")[0].lower()
-            if (LANG_DIR / f"{lang_code}.json").exists():
-                LANGUAGE = lang_code
+def init_locale() -> None:
+    """Resolve and store locale/language/country globals."""
+    global LOCALE, LANGUAGE, COUNTRY
+
+    previous_language = LANGUAGE
+
+    configured_locale = _get_configured_locale()
+    if configured_locale and _is_valid_locale(configured_locale):
+        LOCALE = configured_locale
+        LANGUAGE = configured_locale.split("_", 1)[0].lower()
+        COUNTRY = configured_locale.split("_", 1)[1].upper()
+        if _get_language_source() is None and _can_override_language("system"):
+            Config.set("language_source", "system")
+        return
+
+    os_locale = get_os_locale()
+    if os_locale:
+        normalized = normalize_locale(os_locale)
+        if _is_valid_locale(normalized):
+            LOCALE = normalized
+            LANGUAGE = normalized.split("_", 1)[0].lower()
+            COUNTRY = normalized.split("_", 1)[1].upper()
+            if not STATUS_MODE and LANGUAGE != previous_language:
                 message = (
-                    f'System language detected. Using "{lang_code}" '
-                    f'instead of "{DEFAULT_LANG}"'
+                    f'System language detected. Using "{LANGUAGE}" '
+                    f'instead of "{previous_language}"'
                 )
                 print(f"\n{color_text(message, '93')}")
                 print(f"{color_text(f'You can change it in your {SETTINGS_FILE}', '93')}")
                 print()
-                Config.set("language", LANGUAGE)
-            else:
-                LANGUAGE = DEFAULT_LANG
-        else:
-            LANGUAGE = DEFAULT_LANG
+            if _can_override_language("system"):
+                Config.set("language", normalized)
+                Config.set("language_source", "system")
+        return
+
+init_locale()
 
 TRANSLATIONS = _load_translations(LANGUAGE)
+
+def store_tesla_locale(locale_value: Optional[str]) -> None:
+    """Persist a Tesla-provided locale as the primary language setting."""
+    if not isinstance(locale_value, str) or not locale_value.strip():
+        return
+    previous_language = LANGUAGE
+    normalized = normalize_locale(locale_value)
+    if not normalized:
+        return
+    if _can_override_language("tesla"):
+        Config.set("language", normalized)
+        Config.set("language_source", "tesla")
+        init_locale()
+        if not STATUS_MODE and LANGUAGE != previous_language:
+            message = (
+                f'Tesla order language detected. Using "{LANGUAGE}" '
+                f'instead of "{previous_language}"'
+            )
+            print(f"\n{color_text(message, '93')}")
+            print(f"{color_text(f'You can change it in your {SETTINGS_FILE}', '93')}")
+            print()
 
 def set_language(lang: str) -> None:
     """Set active *lang* and reload translations."""
@@ -278,13 +335,12 @@ def set_language(lang: str) -> None:
     LANGUAGE = lang
     TRANSLATIONS = _load_translations(lang)
 
-
 class use_default_language:
-    """Context manager to temporarily force DEFAULT_LANG translations."""
+    """Context manager to temporarily force default translations."""
 
     def __enter__(self):
         self._previous = LANGUAGE
-        set_language(DEFAULT_LANG)
+        set_language("en")
 
     def __exit__(self, exc_type, exc, tb):
         set_language(self._previous)

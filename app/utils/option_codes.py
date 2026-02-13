@@ -14,7 +14,7 @@ from app.utils.connection import request_with_retry
 FETCH_URL = "https://www.tesla-order-status-tracker.de/get/option_codes.php"
 CACHE_FILE = PRIVATE_DIR / "option_codes_cache.json"
 CACHE_TTL = timedelta(hours=24)
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 _OPTION_CODES: Optional[Dict[str, Dict[str, Any]]] = None
 
 
@@ -22,17 +22,28 @@ def _normalize_entry(value: Any) -> Optional[Dict[str, Any]]:
     """Return a uniform option-code payload with at least label/category."""
     if isinstance(value, dict):
         label = value.get("label") or value.get("label_en") or value.get("label_en_us")
+        label_short = value.get("label_short") or value.get("label_en_short")
         if label is None and "raw" in value:
             raw = value.get("raw")
             if isinstance(raw, dict):
                 label = raw.get("label") or raw.get("label_en")
+                if label_short is None:
+                    label_short = raw.get("label_en_short")
         category = value.get("category")
         raw_payload = value.get("raw")
         if raw_payload is None:
             # Preserve original payload for future use if we have access to it
             raw_payload = {
                 k: v for k, v in value.items()
-                if k not in {"label", "label_en", "label_en_us", "category", "raw"}
+                if k not in {
+                    "label",
+                    "label_en",
+                    "label_en_us",
+                    "label_short",
+                    "label_en_short",
+                    "category",
+                    "raw",
+                }
             } or None
         if label is None:
             return None
@@ -40,6 +51,8 @@ def _normalize_entry(value: Any) -> Optional[Dict[str, Any]]:
             "label": str(label),
             "category": str(category).strip().lower() if isinstance(category, str) else None,
         }
+        if isinstance(label_short, str) and label_short.strip():
+            entry["label_short"] = label_short.strip()
         if raw_payload:
             entry["raw"] = raw_payload
         return entry
@@ -148,6 +161,7 @@ def _fetch_remote() -> Tuple[Optional[Dict[str, Dict[str, Any]]], Optional[str]]
             continue
         code = entry.get("code")
         label = entry.get("label_en")
+        label_short = entry.get("label_en_short")
         if not code or label is None:
             continue
         category = entry.get("category")
@@ -156,6 +170,8 @@ def _fetch_remote() -> Tuple[Optional[Dict[str, Dict[str, Any]]], Optional[str]]
             "category": str(category).strip().lower() if isinstance(category, str) else None,
             "raw": entry,
         }
+        if isinstance(label_short, str) and label_short.strip():
+            normalized_entry["label_short"] = label_short.strip()
         option_codes[str(code).strip().upper()] = normalized_entry
 
     fetched_at = payload.get("fetched_at")

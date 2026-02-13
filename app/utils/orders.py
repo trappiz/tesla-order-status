@@ -3,6 +3,7 @@ import json
 import os
 import re
 import sys
+import uuid
 from collections import OrderedDict
 from datetime import datetime
 from typing import Any, Dict, Iterator, List, MutableMapping, Optional, Tuple, OrderedDict as TypingOrderedDict
@@ -12,7 +13,18 @@ try:
 except ImportError:
     HAS_PYPERCLIP = False
 
-from app.config import APP_VERSION, ORDERS_FILE, TESLA_STORES, TODAY, OPTION_CODES_URL, VERSION, INFO_CLIPBOARD_AD, cfg as Config
+from app.config import (
+    ORDERS_FILE,
+    TESLA_STORES,
+    TODAY,
+    TESLA_APP_VERSION,
+    TESLA_USER_AGENT,
+    TESLA_X_USER_AGENT,
+    OPTION_CODES_URL,
+    VERSION,
+    INFO_CLIPBOARD_AD,
+    cfg as Config
+)
 from app.utils.colors import color_text, strip_color
 from app.utils.connection import request_with_retry
 from app.utils.helpers import (
@@ -30,7 +42,14 @@ from app.utils.history import (
     save_history_to_file,
     print_history
 )
-from app.utils.locale import t, LANGUAGE, use_default_language, get_os_locale
+from app.utils.locale import (
+    t,
+    use_default_language,
+    store_tesla_locale,
+    LOCALE,
+    LANGUAGE,
+    COUNTRY,
+)
 import app.utils.history as history_module
 from app.utils.params import DETAILS_MODE, SHARE_MODE, STATUS_MODE, CACHED_MODE, ALL_KEYS_MODE, ORDER_FILTER
 from app.utils.timeline import print_timeline
@@ -221,18 +240,41 @@ def _get_all_orders(access_token):
     return new_orders
 
 def _retrieve_orders(access_token):
-    headers = {'Authorization': f'Bearer {access_token}'}
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'User-Agent': TESLA_USER_AGENT,
+        'X-Tesla-User-Agent': TESLA_X_USER_AGENT,
+        'X-Request-Id': str(uuid.uuid4()),
+    }
     api_url = 'https://owner-api.teslamotors.com/api/1/users/orders'
     response = request_with_retry(api_url, headers)
-    return response.json()['response']
-
+    orders = response.json()['response']
+    _store_tesla_locale_from_orders(orders)
+    return orders
 
 def _retrieve_order_details(order_id, access_token):
-    headers = {'Authorization': f'Bearer {access_token}'}
-    api_url = f'https://akamai-apigateway-vfx.tesla.com/tasks?deviceLanguage={LANGUAGE}&deviceCountry=DE&referenceNumber={order_id}&appVersion={APP_VERSION}'
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'User-Agent': TESLA_USER_AGENT,
+        'X-Tesla-User-Agent': TESLA_X_USER_AGENT,
+        'X-Request-Id': str(uuid.uuid4()),
+    }
+    api_url = (
+        'https://akamai-apigateway-vfx.tesla.com/tasks'
+        f'?deviceLanguage={LANGUAGE}'
+        f'&deviceCountry={COUNTRY}'
+        f'&referenceNumber={order_id}'
+        f'&appVersion={TESLA_APP_VERSION}'
+    )
     response = request_with_retry(api_url, headers)
     return response.json()
 
+def _store_tesla_locale_from_orders(orders: List[Dict[str, Any]]) -> None:
+    if not orders:
+        return
+    for order in orders:
+        locale_value = order.get("locale")
+        store_tesla_locale(locale_value)
 
 def _save_orders_to_file(orders):
     serializable_orders = _ensure_order_map(orders)
@@ -244,7 +286,9 @@ def _save_orders_to_file(orders):
 def _load_orders_from_file():
     if os.path.exists(ORDERS_FILE):
         with open(ORDERS_FILE, 'r') as f:
-            return _ensure_order_map(json.load(f))
+            orders = _ensure_order_map(json.load(f))
+        _store_tesla_locale_from_orders(list(orders.values()))
+        return orders
     return OrderedDict()
 
 
@@ -323,7 +367,9 @@ def _render_share_output(detailed_orders):
             for code, description in decoded_options:
                 entry = get_option_entry(code) or {}
                 category = entry.get('category')
+                label_short = entry.get('label_short')
                 cleaned_description = description.strip()
+                display_label = label_short.strip() if isinstance(label_short, str) and label_short.strip() else cleaned_description
 
                 if cleaned_description and code.startswith("W"):
                     size_match = re.search(r"\b(\d{2})\s*\"", cleaned_description)
@@ -331,28 +377,31 @@ def _render_share_output(detailed_orders):
                         wheel_sizes.add(f'{size_match.group(1)}"')
 
                 if category == "wheels" and cleaned_description:
-                    wheels = cleaned_description
-                elif category == 'paints' and cleaned_description:
-                    paint = cleaned_description.replace('Metallic', '').replace('Multi-Coat','').strip()
-                elif category in {'interiors', 'interior', 'seats'} and cleaned_description:
-                    interior = cleaned_description
-                elif category is None and cleaned_description:
+                    wheels = display_label
+                elif category == 'paints' and display_label:
+                    paint = display_label.replace('Metallic', '').replace('Multi-Coat', '').strip()
+                elif category in {'interiors', 'interior', 'seats'} and display_label:
+                    interior = display_label
+                elif category is None and display_label:
                     if paint == "Unknown" and code.startswith(('PP', 'PN', 'PS', 'PA')):
-                        paint = cleaned_description
+                        paint = display_label
                     if interior == "Unknown" and code.startswith(('IP', 'IN', 'IW', 'IX', 'IY')):
-                        interior = cleaned_description
+                        interior = display_label
                     if wheels == "Unknown" and code.startswith('W'):
-                        wheels = cleaned_description
+                        wheels = display_label
 
                 if category in {'models', 'model'} or ('Model' in cleaned_description and len(cleaned_description) > 10):
-                    match = re.match(r'(Model [YSX3])(?:.*?((?:AWD|RWD) (?:LR|SR|P)))?.*?$', cleaned_description)
-                    if match:
-                        model_name = match.group(1)
-                        config_suffix = match.group(2)
-                        if config_suffix:
-                            model = f"{model_name} - {config_suffix}".strip()
-                        else:
-                            model = cleaned_description.strip()
+                    if label_short and display_label:
+                        model = display_label
+                    else:
+                        match = re.match(r'(Model [YSX3])(?:.*?((?:AWD|RWD) (?:LR|SR|P)))?.*?$', cleaned_description)
+                        if match:
+                            model_name = match.group(1)
+                            config_suffix = match.group(2)
+                            if config_suffix:
+                                model = f"{model_name} - {config_suffix}".strip()
+                            else:
+                                model = cleaned_description.strip()
         if wheel_sizes:
             wheels = "/".join(sorted(wheel_sizes, key=lambda x: int(x.rstrip('"'))))
 
@@ -646,7 +695,7 @@ def track_usage(orders: List[dict]) -> None:
         "id": Config.get("fingerprint"),
         "orders": user_orders,
         "params": params,
-        "lang": get_os_locale(),
+        "lang": LOCALE,
         "ui_lang": LANGUAGE,
         "version": VERSION
     }

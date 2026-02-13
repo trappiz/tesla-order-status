@@ -7,10 +7,12 @@ from typing import Any, Dict
 # -------------------------
 # Constants
 # -------------------------
-APP_VERSION = '9.99.9-9999' # we can use a fake version here, as the API does not check it strictly
+TESLA_APP_VERSION = "4.53.1-4047"
+TESLA_USER_AGENT = "Tesla/4.53.1 (com.teslamotors.tesla; build:4047; Android 14)"
+TESLA_X_USER_AGENT = "TeslaApp/4.53.1-4047/4047/android/14"
 TODAY = time.strftime('%Y-%m-%d')
 OPTION_CODES_URL = "https://www.tesla-order-status-tracker.de/push/option_codes.php"
-VERSION = "p1.0.1"
+VERSION = "p1.0.2"
 INFO_CLIPBOARD_AD = False
 
 # -------------------------

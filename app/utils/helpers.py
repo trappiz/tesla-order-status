@@ -22,7 +22,7 @@ def exit_with_status(msg: str) -> None:
     sys.exit(1)
 
 
-def decode_option_codes(option_string: str):
+def decode_option_codes(option_string: str, prefer_short: bool = False):
     """Return a list of tuples with (code, description)."""
     if not isinstance(option_string, str) or not option_string:
         return []
@@ -40,7 +40,10 @@ def decode_option_codes(option_string: str):
         entry = option_codes.get(code)
         label = None
         if isinstance(entry, dict):
-            label = entry.get("label")
+            if prefer_short:
+                label = entry.get("label_short") or entry.get("label")
+            else:
+                label = entry.get("label")
         elif isinstance(entry, str):
             # Backwards compatibility for legacy caches
             label = entry
