@@ -1,9 +1,9 @@
 """
 Migration: 2025-08-23-history
-- Migriert die History-Datei vom alten String-Deltaformat zu strukturierten Dict-Einträgen.
-- Schaut zuerst in PRIVATE_DIR/tesla_order_history.json, dann (Fallback) in BASE_DIR/tesla_order_history.json.
-- **Kein Verschieben/Kopieren** der Datei: wird, falls gefunden, *in-place* migriert.
-- Idempotent: wenn schon migriert, passiert nix.
+- Migrates the history file from the old string delta format to structured dictionary entries.
+- First looks in PRIVATE_DIR/tesla_order_history.json, then (fallback) in BASE_DIR/tesla_order_history.json.
+- **No moving/copying** of the file: if found, it will be migrated *in-place*.
+- Idempotent: if the migration has already been completed, nothing will happen.
 """
 from __future__ import annotations
 

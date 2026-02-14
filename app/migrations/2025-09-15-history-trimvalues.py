@@ -1,8 +1,8 @@
 """
 Migration: 2025-09-05-history-trim
-- Entfernt führende und nachfolgende Whitespaces aus allen string 'value'- und 'old_value'-Feldern in der History.
-- Sucht die History-Datei sowohl im BASE_DIR als auch im PRIVATE_DIR.
-- Keine Aktion, falls Datei nicht vorhanden.
+- Removes leading and trailing whitespace from all string 'value' and 'old_value' fields in the history.
+- Searches for the history file in both BASE_DIR and PRIVATE_DIR.
+- Takes no action if the file does not exist.
 """
 from __future__ import annotations
 

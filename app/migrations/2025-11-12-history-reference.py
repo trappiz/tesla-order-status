@@ -1,10 +1,9 @@
 """
 Migration: 2025-11-12-history-reference
-- Hebt die History-Datei auf das neue Format `{referenceNumber: [entries...]}` an.
-- Bestimmt zu jedem Change die passende `referenceNumber`, schneidet den Index-Präfix vom Key ab
-  und speichert die Änderungen gruppiert pro Order.
-- Verwendet `tesla_orders.json`, um alte numerische Indizes den richtigen Referenzen zuzuordnen.
-- Idempotent: Wenn die Datei bereits im neuen Dict-Format vorliegt, passiert nichts.
+- Converts the history file to the new format `{referenceNumber: [entries...]}`.
+- Determines the appropriate `referenceNumber` for each change, removes the index prefix from the key, and saves the changes grouped by order.
+- Uses `tesla_orders.json` to map old numeric indexes to the correct references.
+- Idempotent: If the file is already in the new Dict format, nothing happens.
 """
 from __future__ import annotations
 
