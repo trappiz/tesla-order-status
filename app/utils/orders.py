@@ -23,6 +23,7 @@ from app.config import (
     OPTION_CODES_URL,
     VERSION,
     INFO_CLIPBOARD_AD,
+    COPY_TO_CLIPBOARD,
     cfg as Config
 )
 from app.utils.colors import color_text, strip_color
@@ -435,7 +436,7 @@ def generate_share_output(detailed_orders):
         sys.stdout = original_stdout
         history_module.SHARE_MODE = original_share_mode
 
-    if HAS_PYPERCLIP:
+    if HAS_PYPERCLIP and COPY_TO_CLIPBOARD:
         # Create advertising text but don't print it
         ad_text = (f"{strip_color('Do you want to share your data and compete with others?')}\n"
                    f"{strip_color('Check it out on GitHub: https://github.com/trappiz/tesla-order-status')}")
@@ -577,11 +578,16 @@ def display_orders(detailed_orders):
 def print_bottom_line() -> None:
     print(f"\n{color_text(t('BOTTOM LINE HELP'), '94')}")
     # Inform user about clipboard status
-    if HAS_PYPERCLIP:
+    if HAS_PYPERCLIP and COPY_TO_CLIPBOARD:
         print(f"\n{color_text(t('BOTTOM LINE TEXT IN CLIPBOARD'), '93')}")
+    elif COPY_TO_CLIPBOARD is False:
+        #print(f"\n{color_text(t('BOTTOM LINE CLIPBOARD NOT WORKING'), '91')}")
+        #print(f"{color_text('https://github.com/trappiz/tesla-order-status?tab=readme-ov-file#general', '91')}")
+        print()
     else:
         print(f"\n{color_text(t('BOTTOM LINE CLIPBOARD NOT WORKING'), '91')}")
         print(f"{color_text('https://github.com/trappiz/tesla-order-status?tab=readme-ov-file#general', '91')}")
+
 
 
 # ---------------------------

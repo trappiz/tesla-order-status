@@ -14,6 +14,7 @@ TODAY = time.strftime('%Y-%m-%d')
 OPTION_CODES_URL = "https://www.tesla-order-status-tracker.de/push/option_codes.php"
 VERSION = "p1.0.2"
 INFO_CLIPBOARD_AD = False
+COPY_TO_CLIPBOARD = False
 
 # -------------------------
 # Directory structure (new)
