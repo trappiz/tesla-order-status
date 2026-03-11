@@ -38,6 +38,7 @@
   "> Tokens saved to '{file}'": "> Tokens unter '{file}' gespeichert",
   "> Access token is not valid anymore. Refreshing tokens...": "> Zugriffstoken ist nicht mehr gültig. Tokens werden aktualisiert...",
   "> Error loading tokens from file. Re-authenticating...": "> Fehler beim Laden der Tokens aus der Datei. Erneute Authentifizierung...",
+  "Access token expired or invalid. Attempting to refresh...": "Zugriffstoken abgelaufen oder ungültig. Aktualisierung wird versucht...",
   "Would you like to save the tokens to a file in the current directory for use in future requests? (y/n): ": "Möchtest du die Tokens zur späteren Verwendung in einer Datei im aktuellen Verzeichnis speichern? (y/n): ",
   "Unknown option code": "Unbekannter Optionscode",
 
@@ -115,22 +116,8 @@
   "HELP PARAM ALL": "ALLE Schlüssel im Verlauf anzeigen (möglicherweise sehr viele Daten!)",
   "HELP PARAM CACHED": "Verwendet lokal zwischengespeicherte Daten, ohne die API zu kontaktieren.",
   "HELP PARAM ORDER": "Zeigt nur die Bestellung mit der angegebenen Referenznummer (z. B. RN123456).",
-  "Error: No order with reference '{reference}' found.": "Fehler: Keine Bestellung mit der Referenz \"{reference}\" gefunden."
+  "Error: No order with reference '{reference}' found.": "Fehler: Keine Bestellung mit der Referenz \"{reference}\" gefunden.",
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  "No state parameter found in the redirected URL.": "In der umgeleiteten URL wurde kein Statusparameter gefunden.",
+  "Security Error (CSRF protection): State parameter mismatch! Authentication aborted.": "Sicherheitsfehler (CSRF-Schutz): Statusparameter stimmen nicht überein! Authentifizierung abgebrochen."
 }

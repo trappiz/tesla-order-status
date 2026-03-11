@@ -37,6 +37,7 @@
   "No authentication code found in the redirected URL.": "Ingen autentiseringskod hittades i den omdirigerade URL:en.",
   "> Tokens saved to '{file}'": "> Token sparade i '{file}'",
   "> Access token is not valid anymore. Refreshing tokens...": "> Åtkomsttoken är inte längre giltig. Uppdaterar token...",
+  "Access token expired or invalid. Attempting to refresh...": "Åtkomsttoken har gått ut eller är ogiltig. Försöker uppdatera...",
   "> Error loading tokens from file. Re-authenticating...": "> Fel vid laddning av token från fil. Autentiserar igen...",
   "Would you like to save the tokens to a file in the current directory for use in future requests? (y/n): ": "Vill du spara token i en fil i den aktuella katalogen för framtida förfrågningar? (y/n): ",
   "Unknown option code": "Okänd alternativkod",
@@ -116,5 +117,8 @@
   "HELP PARAM ALL": "Visa ALLA nycklar i historiken (kan vara mycket data)",
   "HELP PARAM CACHED": "Använd lokalt cachade data utan att kontakta API:t.",
   "HELP PARAM ORDER": "Visa endast beställningen med angivet referensnummer (t.ex. RN123456).",
-  "Error: No order with reference '{reference}' found.": "Fel: Hittade ingen beställning med referensen \"{reference}\"."
+  "Error: No order with reference '{reference}' found.": "Fel: Hittade ingen beställning med referensen \"{reference}\".",
+
+  "No state parameter found in the redirected URL.": "Ingen statusparameter hittades i den omdirigerade URL:en.",
+  "Security Error (CSRF protection): State parameter mismatch! Authentication aborted.": "Säkerhetsfel (CSRF-skydd): Statusparametern matchar inte! Autentiseringen avbröts."
 }

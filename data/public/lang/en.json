@@ -38,6 +38,7 @@
   "> Tokens saved to '{file}'": "> Tokens saved to '{file}'",
   "> Access token is not valid anymore. Refreshing tokens...": "> Access token is not valid anymore. Refreshing tokens...",
   "> Error loading tokens from file. Re-authenticating...": "> Error loading tokens from file. Re-authenticating...",
+  "Access token expired or invalid. Attempting to refresh...": "Access token expired or invalid. Attempting to refresh...",
   "Would you like to save the tokens to a file in the current directory for use in future requests? (y/n): ": "Would you like to save the tokens to a file in the current directory for use in future requests? (y/n): ",
   "Unknown option code": "Unknown option code",
 
@@ -116,5 +117,8 @@
   "HELP PARAM ALL": "Show ALL keys in your history (potentially much data)",
   "HELP PARAM CACHED": "Use locally cached data without contacting the API.",
   "HELP PARAM ORDER": "Display only the order with the given reference number (e.g. RN123456).",
-  "Error: No order with reference '{reference}' found.": "Error: No order with reference '{reference}' found."
+  "Error: No order with reference '{reference}' found.": "Error: No order with reference '{reference}' found.",
+
+  "No state parameter found in the redirected URL.": "No state parameter found in the redirected URL.",
+  "Security Error (CSRF protection): State parameter mismatch! Authentication aborted.": "Security Error (CSRF protection): State parameter mismatch! Authentication aborted."
 }

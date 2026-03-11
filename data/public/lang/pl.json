@@ -38,6 +38,7 @@
   "> Tokens saved to '{file}'": "> Tokeny zapisane do '{file}'",
   "> Access token is not valid anymore. Refreshing tokens...": "> Token dostępu nie jest już ważny. Odświeżanie tokenów...",
   "> Error loading tokens from file. Re-authenticating...": "> Błąd podczas wczytywania tokenów z pliku. Ponowna autoryzacja...",
+  "Access token expired or invalid. Attempting to refresh...": "Token dostępu wygasł lub jest nieprawidłowy. Próba odświeżenia...",
   "Would you like to save the tokens to a file in the current directory for use in future requests? (y/n): ": "Czy chcesz zapisać tokeny do pliku w bieżącym katalogu do użycia w przyszłych zapytaniach? (y/n): ",
   "Unknown option code": "Nieznany kod opcji",
 
@@ -116,5 +117,8 @@
   "HELP PARAM ALL": "Pokaż WSZYSTKIE klucze w historii (może być dużo danych)",
   "HELP PARAM CACHED": "Użyj lokalnie zapisanych danych bez kontaktu z API.",
   "HELP PARAM ORDER": "Wyświetl tylko zamówienie o podanym numerze referencyjnym (np. RN123456).",
-  "Error: No order with reference '{reference}' found.": "Błąd: Nie znaleziono zamówienia o numerze referencyjnym \"{reference}\"."
+  "Error: No order with reference '{reference}' found.": "Błąd: Nie znaleziono zamówienia o numerze referencyjnym \"{reference}\".",
+
+  "No state parameter found in the redirected URL.": "Nie znaleziono parametru stanu w przekierowanym adresie URL.",
+  "Security Error (CSRF protection): State parameter mismatch! Authentication aborted.": "Nie znaleziono parametru stanu w przekierowanym adresie URL."
 }
