@@ -45,7 +45,7 @@ def request_with_retry(url, headers=None, data=None, json=None, max_retries=3, e
                 if json is not None:
                     response = requests.post(url, headers=headers, json=json)
                 else:
-                    # Falls string/bytes: direkt senden; falls dict: sauber als JSON senden
+                    # If string/bytes: send directly; if dict: send cleanly as JSON.
                     if isinstance(data, (dict, list)):
                         response = requests.post(
                             url,

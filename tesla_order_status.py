@@ -22,7 +22,6 @@ def main() -> None:
     """Import and run the application modules."""
     from app.config import cfg as Config
     from app.utils.auth import main as run_tesla_auth
-    from app.utils.banner import display_banner
     from app.utils.helpers import generate_token
     from app.utils.orders import main as run_orders
     from app.utils.params import STATUS_MODE
@@ -34,8 +33,6 @@ def main() -> None:
     if not Config.has("fingerprint"):
         Config.set("fingerprint", generate_token(16, 32))
 
-    if not STATUS_MODE:
-        display_banner()
     access_token = run_tesla_auth()
     run_orders(access_token)
 

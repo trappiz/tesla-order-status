@@ -44,7 +44,6 @@ FILES_TO_CHECK: List[Path] = [
     APP_DIR / "config.py",
     APP_DIR / "update_check.py",
     APP_DIR / "utils" / "auth.py",
-    APP_DIR / "utils" / "banner.py",
     APP_DIR / "utils" / "colors.py",
     APP_DIR / "utils" / "connection.py",
     APP_DIR / "utils" / "helpers.py",
