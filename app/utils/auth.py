@@ -134,7 +134,7 @@ def _is_token_valid(access_token):
         # assume the token is invalid and needs to be refreshed.
         return False
 
-def _refresh_tokens(refresh_token):
+def refresh_tokens(refresh_token):
     token_data = {
         'grant_type': 'refresh_token',
         'client_id': CLIENT_ID,
