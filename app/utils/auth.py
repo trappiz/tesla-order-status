@@ -61,12 +61,27 @@ def _get_auth_code(code_challenge: str):
     except Exception:
         print(color_text(t("No GUI detected. Open this URL manually:"), 91))
         print(f"{auth_url}")
+
     redirected_url = input(color_text(t("Please enter the redirected URL here: "), '93'))
     parsed_url = urllib.parse.urlparse(redirected_url)
     params = urllib.parse.parse_qs(parsed_url.query)
+
+    # Extract both 'code' and 'state' (parse_qs returns lists)
     code = params.get('code')
+    returned_state = params.get('state')
+
+    # Check that the state parameter was returned in the URL
+    if not returned_state:
+        exit_with_status(t("No state parameter found in the redirected URL."))
+
+    # Validate that the returned state matches the one we sent (STATE)
+    if returned_state[0] != STATE:
+        exit_with_status(t("Security Error (CSRF protection): State parameter mismatch! Authentication aborted."))
+
+    # Check that we actually received an auth code
     if not code:
         exit_with_status(t("No authentication code found in the redirected URL."))
+
     return code[0]
 
 def _exchange_code_for_tokens(auth_code,code_verifier):
@@ -94,9 +109,30 @@ def _load_tokens_from_file():
 
 
 def _is_token_valid(access_token):
-    jwt_decoded = json.loads(base64.b64decode(access_token.split('.')[1] + '==').decode('utf-8'))
-    return jwt_decoded['exp'] > time.time()
+    try:
+        # Ensure the token has three parts (Header.Payload.Signature)
+        parts = access_token.split('.')
+        if len(parts) != 3:
+            return False
 
+        # Extract the payload and add the correct amount of padding
+        payload = parts[1]
+        # Base64 requires the string length to be a multiple of 4.
+        # We append '=' to make up the difference.
+        padded_payload = payload + '=' * (-len(payload) % 4)
+
+        # Decode securely using urlsafe_b64decode (standard for JWT)
+        decoded_bytes = base64.urlsafe_b64decode(padded_payload)
+        jwt_decoded = json.loads(decoded_bytes.decode('utf-8'))
+
+        # Check expiration, adding a small buffer (e.g., 60 seconds)
+        # to ensure it doesn't expire exactly while we make the request
+        return jwt_decoded.get('exp', 0) > (time.time() + 60)
+
+    except (IndexError, ValueError, TypeError, json.JSONDecodeError):
+        # If anything goes wrong (corrupted token, bad format),
+        # assume the token is invalid and needs to be refreshed.
+        return False
 
 def _refresh_tokens(refresh_token):
     token_data = {

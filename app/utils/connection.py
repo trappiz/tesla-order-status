@@ -57,7 +57,26 @@ def request_with_retry(url, headers=None, data=None, json=None, max_retries=3, e
 
             try:
                 response.raise_for_status()
+
             except Exception:
+                # --- Intercept 401 Unauthorized for Token Refresh ---
+                if response.status_code == 401:
+                    # Local import to prevent circular dependencies
+                    from app.utils.auth import _refresh_tokens
+
+                    print(color_text(t("Access token expired or invalid. Attempting to refresh..."), '93'))
+
+                    # Fetch the new token
+                    new_token = _refresh_tokens()
+
+                    if new_token:
+                        # Update the headers with the new token
+                        if headers and 'Authorization' in headers:
+                            headers['Authorization'] = f"Bearer {new_token}"
+
+                        # Continue to the next attempt in the loop without sleeping
+                        continue
+
                 if response.status_code >= 500:
                     if attempt == max_retries - 1:
                         if exit_on_error:
