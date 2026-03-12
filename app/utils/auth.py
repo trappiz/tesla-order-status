@@ -160,7 +160,7 @@ def main() -> str:
             if not _is_token_valid(access_token):
                 if not STATUS_MODE:
                     print(color_text(t("> Access token is not valid anymore. Refreshing tokens..."), '94'))
-                token_response = _refresh_tokens(refresh_token)
+                token_response = refresh_tokens(refresh_token)
                 access_token = token_response['access_token']
                 # refresh access token in file
                 token_file['access_token'] = access_token
