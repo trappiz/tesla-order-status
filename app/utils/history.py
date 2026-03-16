@@ -223,9 +223,9 @@ def format_history_entry(entry, colored):
     if op == 'changed':
         if colored:
             return (
-                f"{color_text(f'- {timestamp}: ≠ {t(key)}:', '94')} "
+                f"{color_text(f'- {timestamp}: ≠ {t(key)}:', '93')} "
                 f"{color_text(old_value, '91')} "
-                f"{color_text('->', '94')} "
+                f"{color_text('->', '93')} "
                 f"{color_text(value, '92')}"
             )
         else:
