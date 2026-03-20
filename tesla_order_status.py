@@ -16,10 +16,10 @@ def main() -> None:
 
     run_all_migrations()
 
-    # Run check for updates
-    from app.update_check import main as run_update_check
+    # Import update module
+    from app.update import check_for_updates, maybe_run_update_from_main_cli
 
-    run_update_check()
+    check_for_updates()
 
     """Import and run the application modules."""
     from app.config import cfg as Config
