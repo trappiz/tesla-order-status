@@ -1,0 +1,39 @@
+name: black
+
+on:
+  push:
+    paths:
+      - "**/*.py"
+      - "pyproject.toml"
+      - ".github/workflows/python-format.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Install Black
+        run: python -m pip install --upgrade black
+
+      - name: Run Black
+        run: python -m black .
+
+      - name: Commit formatting changes
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "style: run black to format python code"
+          branch: ${{ github.ref_name }}
