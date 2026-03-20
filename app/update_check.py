@@ -13,6 +13,7 @@ Exit codes:
   1 -> Repo has newer commit (Update available)
   2 -> Error (Feed loading or no valid files)
 """
+
 from __future__ import annotations
 from pathlib import Path
 from datetime import datetime, timezone
@@ -61,6 +62,7 @@ FEED_URL = "https://github.com/trappiz/tesla-order-status"
 ZIP_URL = f"{FEED_URL}/archive/refs/heads/{BRANCH}.zip"
 REQUEST_TIMEOUT = 10  # Sekunden
 
+
 # ---------------------------
 # Helfer
 # ---------------------------
@@ -68,16 +70,16 @@ def get_latest_updated_from_atom(url: str, timeout: int = REQUEST_TIMEOUT) -> da
     resp = requests.get(url, timeout=timeout)
     resp.raise_for_status()
     root = ET.fromstring(resp.content)
-    ns = {'atom': 'http://www.w3.org/2005/Atom'}
-    entry = root.find('atom:entry', ns)
+    ns = {"atom": "http://www.w3.org/2005/Atom"}
+    entry = root.find("atom:entry", ns)
     if entry is None:
         raise ValueError("No <entry> in Atom-Feed found")
-    updated = entry.find('atom:updated', ns)
+    updated = entry.find("atom:updated", ns)
     if updated is None or not updated.text:
         raise ValueError("No <updated> tag found in first <entry>")
     updated_text = updated.text.strip()
     # "2024-07-01T12:34:56Z" -> make ISO compatible with fromisoformat
-    if updated_text.endswith('Z'):
+    if updated_text.endswith("Z"):
         updated_text = updated_text[:-1] + "+00:00"
     dt = datetime.fromisoformat(updated_text)
     if dt.tzinfo is None:
@@ -85,6 +87,7 @@ def get_latest_updated_from_atom(url: str, timeout: int = REQUEST_TIMEOUT) -> da
     else:
         dt = dt.astimezone(timezone.utc)
     return dt
+
 
 def mtime_of_file(path: Path) -> Optional[datetime]:
     """Returns mtime as timezone-aware UTC datetime or None if non-existent / not a file."""
@@ -97,6 +100,7 @@ def mtime_of_file(path: Path) -> Optional[datetime]:
         return datetime.fromtimestamp(ts, tz=timezone.utc)
     except Exception:
         return None
+
 
 def human_delta(a: datetime, b: datetime) -> str:
     delta = a - b
@@ -122,6 +126,7 @@ def _copytree_compat(src: Path, dst: Path) -> None:
             _copytree_compat(child, target)
         else:
             shutil.copy2(child, target)
+
 
 def perform_update(url: str = ZIP_URL, timeout: int = REQUEST_TIMEOUT) -> bool:
     """
@@ -160,7 +165,11 @@ def ask_for_update():
         return 0 if perform_update() else 2
     else:
         if not STATUS_MODE:
-            answer = input(t("Do you want to download and extract the update? (y/n): ")).strip().lower()
+            answer = (
+                input(t("Do you want to download and extract the update? (y/n): "))
+                .strip()
+                .lower()
+            )
             if answer == "y":
                 return 0 if perform_update() else 2
             else:
@@ -171,12 +180,30 @@ def ask_for_update():
 
 
 def ask_for_update_consent():
-    print(color_text(t('New Feature: Update Settings'), '93'))
-    print(color_text(t('Please select how you want to handle updates:'), '93'))
-    print(color_text(t('- [m]anual updates: You will be asked to confirm each update, as it was before.'), '93'))
-    print(color_text(t('- [a]utomatic updates: Updates will be installed automatically'), '93'))
-    print(color_text(t('- [b]lock updates: Updates will be disabled completely'), '93'))
-    print(color_text(t('You can change your mind everytime by removing "update_method" from your "data/private/settings.json":'), '93'))
+    print(color_text(t("New Feature: Update Settings"), "93"))
+    print(color_text(t("Please select how you want to handle updates:"), "93"))
+    print(
+        color_text(
+            t(
+                "- [m]anual updates: You will be asked to confirm each update, as it was before."
+            ),
+            "93",
+        )
+    )
+    print(
+        color_text(
+            t("- [a]utomatic updates: Updates will be installed automatically"), "93"
+        )
+    )
+    print(color_text(t("- [b]lock updates: Updates will be disabled completely"), "93"))
+    print(
+        color_text(
+            t(
+                'You can change your mind everytime by removing "update_method" from your "data/private/settings.json":'
+            ),
+            "93",
+        )
+    )
     consent = input(t("Please choose an option (m/a/b): ")).strip().lower()
 
     if consent == "b":
@@ -185,6 +212,7 @@ def ask_for_update_consent():
         Config.set("update_method", "automatically")
     else:
         Config.set("update_method", "manual")
+
 
 # ---------------------------
 # Main-Logic
@@ -203,10 +231,17 @@ def main() -> int:
         return 0
     # Lade Feed
     try:
-        last_commit_dt = get_latest_updated_from_atom(f"{FEED_URL}/commits/{BRANCH}.atom")
+        last_commit_dt = get_latest_updated_from_atom(
+            f"{FEED_URL}/commits/{BRANCH}.atom"
+        )
     except Exception as e:
         if not STATUS_MODE:
-            print(t("[ERROR] Could not load Atom feed for update check: {error}").format(error=e), file=sys.stderr)
+            print(
+                t("[ERROR] Could not load Atom feed for update check: {error}").format(
+                    error=e
+                ),
+                file=sys.stderr,
+            )
         else:
             print(-1)
             sys.exit()
@@ -226,7 +261,11 @@ def main() -> int:
             else:
                 errors += 1
                 if not STATUS_MODE:
-                    print(t("[WARN] Path is not a file and could not get read: {path}").format(path=p))
+                    print(
+                        t(
+                            "[WARN] Path is not a file and could not get read: {path}"
+                        ).format(path=p)
+                    )
             continue
         mtimes[p] = m
 
@@ -237,7 +276,11 @@ def main() -> int:
     if errors > 0:
         if not STATUS_MODE:
             print(t("[PACKAGE CORRUPT]"))
-            print(t("Your Project is missing some files. Please download the complete project."))
+            print(
+                t(
+                    "Your Project is missing some files. Please download the complete project."
+                )
+            )
             return ask_for_update()
         else:
             print(-1)
@@ -249,11 +292,16 @@ def main() -> int:
     if last_commit_dt > newest_dt:
         if not STATUS_MODE:
             print(t("[UPDATE AVAILABLE]"))
-            print(t("Last Update: {delta} younger than your version").format(delta=human_delta(last_commit_dt, newest_dt)))
+            print(
+                t("Last Update: {delta} younger than your version").format(
+                    delta=human_delta(last_commit_dt, newest_dt)
+                )
+            )
 
         return ask_for_update()
 
     return 0
+
 
 if __name__ == "__main__":
     code = main()

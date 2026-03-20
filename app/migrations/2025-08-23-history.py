@@ -5,6 +5,7 @@ Migration: 2025-08-23-history
 - **No moving/copying** of the file: if found, it will be migrated *in-place*.
 - Idempotent: if the migration has already been completed, nothing will happen.
 """
+
 from __future__ import annotations
 
 import json
@@ -13,6 +14,7 @@ from pathlib import Path
 from typing import Any, List, Dict
 
 from app.config import BASE_DIR, PRIVATE_DIR
+
 
 def _load_json(path: Path) -> Any:
     with open(path, "r", encoding="utf-8") as f:
@@ -49,51 +51,65 @@ def _migrate_history_format(history: List[Dict[str, Any]]):
             if change.startswith("+ Added key '"):
                 m = re.match(r"\+ Added key '([^']+)': (.*)", change)
                 if m:
-                    key = m.group(1).replace('Order ', '', 1)
-                    new_entry["changes"].append({
-                        "operation": "added",
-                        "key": key,
-                        "value": m.group(2),
-                    })
+                    key = m.group(1).replace("Order ", "", 1)
+                    new_entry["changes"].append(
+                        {
+                            "operation": "added",
+                            "key": key,
+                            "value": m.group(2),
+                        }
+                    )
                 i += 1
             elif change.startswith("- Removed key '"):
                 m = re.match(r"- Removed key '([^']+)'", change)
                 if m:
-                    key = m.group(1).replace('Order ', '', 1)
-                    new_entry["changes"].append({
-                        "operation": "removed",
-                        "key": key,
-                        "old_value": None,
-                    })
+                    key = m.group(1).replace("Order ", "", 1)
+                    new_entry["changes"].append(
+                        {
+                            "operation": "removed",
+                            "key": key,
+                            "old_value": None,
+                        }
+                    )
                 i += 1
             elif change.startswith("+ Added order "):
                 m = re.match(r"\+ Added order (\d+)", change)
                 if m:
-                    new_entry["changes"].append({
-                        "operation": "added",
-                        "key": m.group(1),
-                    })
+                    new_entry["changes"].append(
+                        {
+                            "operation": "added",
+                            "key": m.group(1),
+                        }
+                    )
                 i += 1
             elif change.startswith("- Removed order "):
                 m = re.match(r"- Removed order (\d+)", change)
                 if m:
-                    new_entry["changes"].append({
-                        "operation": "removed",
-                        "key": m.group(1),
-                    })
+                    new_entry["changes"].append(
+                        {
+                            "operation": "removed",
+                            "key": m.group(1),
+                        }
+                    )
                 i += 1
-            elif change.startswith('- '):
-                if i + 1 < len(changes) and isinstance(changes[i + 1], str) and changes[i + 1].startswith('+ '):
+            elif change.startswith("- "):
+                if (
+                    i + 1 < len(changes)
+                    and isinstance(changes[i + 1], str)
+                    and changes[i + 1].startswith("+ ")
+                ):
                     m_old = re.match(r"- ([^:]+): (.*)", change)
                     m_new = re.match(r"\+ ([^:]+): (.*)", changes[i + 1])
                     if m_old and m_new and m_old.group(1) == m_new.group(1):
-                        key = m_old.group(1).replace('Order ', '', 1)
-                        new_entry["changes"].append({
-                            'operation': 'changed',
-                            'key': key,
-                            'old_value': m_old.group(2),
-                            'value': m_new.group(2)
-                        })
+                        key = m_old.group(1).replace("Order ", "", 1)
+                        new_entry["changes"].append(
+                            {
+                                "operation": "changed",
+                                "key": key,
+                                "old_value": m_old.group(2),
+                                "value": m_new.group(2),
+                            }
+                        )
                         i += 2
                         continue
                 i += 1

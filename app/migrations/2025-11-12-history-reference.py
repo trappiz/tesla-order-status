@@ -5,6 +5,7 @@ Migration: 2025-11-12-history-reference
 - Uses `tesla_orders.json` to map old numeric indexes to the correct references.
 - Idempotent: If the file is already in the new Dict format, nothing happens.
 """
+
 from __future__ import annotations
 
 import json
@@ -62,7 +63,9 @@ def _build_index_map() -> Dict[str, str]:
     return mapping
 
 
-def _resolve_reference_and_key(change: Dict[str, Any], index_map: Dict[str, str]) -> Tuple[Optional[str], str]:
+def _resolve_reference_and_key(
+    change: Dict[str, Any], index_map: Dict[str, str]
+) -> Tuple[Optional[str], str]:
     if not isinstance(change, dict):
         return None, ""
 
@@ -89,13 +92,20 @@ def _resolve_reference_and_key(change: Dict[str, Any], index_map: Dict[str, str]
     ref_str = str(reference)
     drop_prefix = False
     if prefix:
-        if prefix == ref_str or prefix in index_map or prefix.upper().startswith("RN") or prefix.isdigit():
+        if (
+            prefix == ref_str
+            or prefix in index_map
+            or prefix.upper().startswith("RN")
+            or prefix.isdigit()
+        ):
             drop_prefix = True
     normalized_key = remainder if drop_prefix else key_str
     return ref_str, normalized_key
 
 
-def _migrate_history(history: List[Dict[str, Any]], index_map: Dict[str, str]) -> Dict[str, List[Dict[str, Any]]]:
+def _migrate_history(
+    history: List[Dict[str, Any]], index_map: Dict[str, str]
+) -> Dict[str, List[Dict[str, Any]]]:
     grouped_history: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
 
     for entry in history:
@@ -122,10 +132,9 @@ def _migrate_history(history: List[Dict[str, Any]], index_map: Dict[str, str]) -
         for reference, changes in per_reference.items():
             if not changes:
                 continue
-            grouped_history[str(reference)].append({
-                "timestamp": timestamp,
-                "changes": changes
-            })
+            grouped_history[str(reference)].append(
+                {"timestamp": timestamp, "changes": changes}
+            )
 
     return dict(grouped_history)
 

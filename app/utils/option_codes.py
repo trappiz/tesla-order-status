@@ -34,8 +34,10 @@ def _normalize_entry(value: Any) -> Optional[Dict[str, Any]]:
         if raw_payload is None:
             # Preserve original payload for future use if we have access to it
             raw_payload = {
-                k: v for k, v in value.items()
-                if k not in {
+                k: v
+                for k, v in value.items()
+                if k
+                not in {
                     "label",
                     "label_en",
                     "label_en_us",
@@ -49,7 +51,9 @@ def _normalize_entry(value: Any) -> Optional[Dict[str, Any]]:
             return None
         entry = {
             "label": str(label),
-            "category": str(category).strip().lower() if isinstance(category, str) else None,
+            "category": (
+                str(category).strip().lower() if isinstance(category, str) else None
+            ),
         }
         if isinstance(label_short, str) and label_short.strip():
             entry["label_short"] = label_short.strip()
@@ -130,14 +134,18 @@ def _load_cache(allow_expired: bool = False) -> Optional[Dict[str, Dict[str, Any
     return normalized
 
 
-def _write_cache(option_codes: Dict[str, Dict[str, Any]], fetched_at: Optional[str]) -> None:
+def _write_cache(
+    option_codes: Dict[str, Dict[str, Any]], fetched_at: Optional[str]
+) -> None:
     CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "fetched_at": fetched_at or datetime.now(timezone.utc).isoformat(),
         "option_codes": option_codes,
         "schema_version": SCHEMA_VERSION,
     }
-    CACHE_FILE.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    CACHE_FILE.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
 
 
 def _fetch_remote() -> Tuple[Optional[Dict[str, Dict[str, Any]]], Optional[str]]:
@@ -167,7 +175,9 @@ def _fetch_remote() -> Tuple[Optional[Dict[str, Dict[str, Any]]], Optional[str]]
         category = entry.get("category")
         normalized_entry = {
             "label": str(label),
-            "category": str(category).strip().lower() if isinstance(category, str) else None,
+            "category": (
+                str(category).strip().lower() if isinstance(category, str) else None
+            ),
             "raw": entry,
         }
         if isinstance(label_short, str) and label_short.strip():
@@ -199,7 +209,9 @@ def _load_local_overrides() -> Dict[str, Dict[str, Any]]:
     return option_codes
 
 
-def _apply_local_overrides(option_codes: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+def _apply_local_overrides(
+    option_codes: Dict[str, Dict[str, Any]],
+) -> Dict[str, Dict[str, Any]]:
     overrides = _load_local_overrides()
     if not overrides:
         return option_codes

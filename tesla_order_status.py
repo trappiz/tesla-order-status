@@ -13,10 +13,12 @@ import traceback
 def main() -> None:
     # Run all migrations
     from app.utils.migration import main as run_all_migrations
+
     run_all_migrations()
 
     # Run check for updates
     from app.update_check import main as run_update_check
+
     run_update_check()
 
     """Import and run the application modules."""
@@ -25,7 +27,6 @@ def main() -> None:
     from app.utils.helpers import generate_token
     from app.utils.orders import main as run_orders
     from app.utils.params import STATUS_MODE
-
 
     if not Config.has("secret"):
         Config.set("secret", generate_token(32, None))
@@ -45,6 +46,8 @@ if __name__ == "__main__":
         traceback.print_exc()
         print("\n\nYou can attempt to fix the installation by running:")
         print("hotfix.py instead of tesla_order_status.py")
-        print("\nIf the problem persists, please create an issue including the complete output of tesla_order_status.py")
+        print(
+            "\nIf the problem persists, please create an issue including the complete output of tesla_order_status.py"
+        )
         print("GitHub Issues: https://github.com/trappiz/tesla-order-status/issues")
         sys.exit(1)

@@ -11,6 +11,7 @@ MIGRATIONS_DIR = APP_DIR / "migrations"
 MIGRATIONS_APPLIED_FILE = PRIVATE_DIR / "migrations_applied.json"
 PRIVATE_DIR.mkdir(parents=True, exist_ok=True)
 
+
 def _load_applied_migrations() -> List[str]:
     if MIGRATIONS_APPLIED_FILE.exists():
         try:
@@ -22,9 +23,11 @@ def _load_applied_migrations() -> List[str]:
             pass
     return []
 
+
 def _save_applied_migrations(names: List[str]) -> None:
     with open(MIGRATIONS_APPLIED_FILE, "w", encoding="utf-8") as f:
         json.dump(sorted(names), f)
+
 
 def main() -> None:
     if not MIGRATIONS_DIR.exists():

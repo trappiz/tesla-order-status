@@ -26,4 +26,8 @@ SHARE_MODE = _args.share
 STATUS_MODE = _args.status
 CACHED_MODE = _args.cached
 ALL_KEYS_MODE = _args.all
-ORDER_FILTER = _args.order.strip().upper() if isinstance(_args.order, str) and _args.order.strip() else None
+ORDER_FILTER = (
+    _args.order.strip().upper()
+    if isinstance(_args.order, str) and _args.order.strip()
+    else None
+)

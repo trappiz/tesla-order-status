@@ -10,7 +10,7 @@ from typing import Any, Dict
 TESLA_APP_VERSION = "4.53.1-4047"
 TESLA_USER_AGENT = "Tesla/4.53.1 (com.teslamotors.tesla; build:4047; Android 14)"
 TESLA_X_USER_AGENT = "TeslaApp/4.53.1-4047/4047/android/14"
-TODAY = time.strftime('%Y-%m-%d')
+TODAY = time.strftime("%Y-%m-%d")
 OPTION_CODES_URL = "https://www.tesla-order-status-tracker.de/push/option_codes.php"
 VERSION = "p1.0.2"
 INFO_CLIPBOARD_AD = False
@@ -25,11 +25,11 @@ DATA_DIR = BASE_DIR / "data"
 PUBLIC_DIR = DATA_DIR / "public"
 PRIVATE_DIR = DATA_DIR / "private"
 
-TOKEN_FILE = PRIVATE_DIR / 'tesla_tokens.json'
-ORDERS_FILE = PRIVATE_DIR / 'tesla_orders.json'
-HISTORY_FILE = PRIVATE_DIR / 'tesla_order_history.json'
-TESLA_STORES_FILE = PUBLIC_DIR / 'tesla_locations.json'
-SETTINGS_FILE = PRIVATE_DIR / 'settings.json'
+TOKEN_FILE = PRIVATE_DIR / "tesla_tokens.json"
+ORDERS_FILE = PRIVATE_DIR / "tesla_orders.json"
+HISTORY_FILE = PRIVATE_DIR / "tesla_order_history.json"
+TESLA_STORES_FILE = PUBLIC_DIR / "tesla_locations.json"
+SETTINGS_FILE = PRIVATE_DIR / "settings.json"
 
 # -------------------------
 # Dataobjects
@@ -39,6 +39,7 @@ try:
         TESLA_STORES = json.load(f)
 except:
     TESLA_STORES = {}
+
 
 class Config:
     def __init__(self, path: Path):
@@ -62,12 +63,9 @@ class Config:
 
     def save(self) -> None:
         self._path.parent.mkdir(parents=True, exist_ok=True)
-        text = json.dumps(
-            self._cfg,
-            indent=2,
-            sort_keys=True,
-            ensure_ascii=False
-        ) + "\n"
+        text = (
+            json.dumps(self._cfg, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+        )
         tmp = self._path.with_suffix(self._path.suffix + ".tmp")
         tmp.write_text(text, encoding="utf-8")
         tmp.replace(self._path)
@@ -85,5 +83,6 @@ class Config:
     def delete(self, key: str) -> None:
         self._cfg.pop(key, None)
         self.save()
+
 
 cfg = Config(SETTINGS_FILE)

@@ -43,6 +43,7 @@ def _get_configured_locale() -> Optional[str]:
         return None
     return normalize_locale(configured)
 
+
 def _load_translations(lang: str) -> dict:
     """Load translation mappings for *lang* with English fallback."""
     translations = {}
@@ -161,7 +162,7 @@ def _try_windows_mapping(tag: str) -> Optional[str]:
     # Also be forgiving with spaces/dashes/parentheses
     s = tag.strip()
     # Replace dash with underscore to unify splitting
-    s = s.replace('-', '_')
+    s = s.replace("-", "_")
 
     # Try patterns like 'Language (Region)'
     m = re.match(r"^([A-Za-z ]+)\s*\(([^)]*)\)$", s)
@@ -177,7 +178,7 @@ def _try_windows_mapping(tag: str) -> Optional[str]:
         return None
 
     # Split on underscore first (Windows classic), else last run of spaces
-    parts = s.split('_') if '_' in s else re.split(r"\s+", s, maxsplit=1)
+    parts = s.split("_") if "_" in s else re.split(r"\s+", s, maxsplit=1)
 
     if len(parts) == 1:
         lang_name = parts[0].strip().lower()
@@ -229,10 +230,12 @@ def normalize_locale(code: str) -> Optional[str]:
 
     return None
 
+
 def _is_valid_locale(value: Optional[str]) -> bool:
     if not isinstance(value, str):
         return False
     return bool(_LOCALE_STRICT_RE.match(value))
+
 
 def get_os_locale() -> Optional[str]:
     """Return the system locale as 'll' or 'll_RR' where possible."""
@@ -269,6 +272,7 @@ def get_os_locale() -> Optional[str]:
 
     return None
 
+
 def init_locale() -> None:
     """Resolve and store locale/language/country globals."""
     global LOCALE, LANGUAGE, COUNTRY
@@ -297,16 +301,20 @@ def init_locale() -> None:
                     f'instead of "{previous_language}"'
                 )
                 print(f"\n{color_text(message, '93')}")
-                print(f"{color_text(f'You can change it in your {SETTINGS_FILE}', '93')}")
+                print(
+                    f"{color_text(f'You can change it in your {SETTINGS_FILE}', '93')}"
+                )
                 print()
             if _can_override_language("system"):
                 Config.set("language", normalized)
                 Config.set("language_source", "system")
         return
 
+
 init_locale()
 
 TRANSLATIONS = _load_translations(LANGUAGE)
+
 
 def store_tesla_locale(locale_value: Optional[str]) -> None:
     """Persist a Tesla-provided locale as the primary language setting."""
@@ -329,11 +337,13 @@ def store_tesla_locale(locale_value: Optional[str]) -> None:
             print(f"{color_text(f'You can change it in your {SETTINGS_FILE}', '93')}")
             print()
 
+
 def set_language(lang: str) -> None:
     """Set active *lang* and reload translations."""
     global LANGUAGE, TRANSLATIONS
     LANGUAGE = lang
     TRANSLATIONS = _load_translations(lang)
+
 
 class use_default_language:
     """Context manager to temporarily force default translations."""

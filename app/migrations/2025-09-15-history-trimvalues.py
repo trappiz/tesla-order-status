@@ -4,6 +4,7 @@ Migration: 2025-09-05-history-trim
 - Searches for the history file in both BASE_DIR and PRIVATE_DIR.
 - Takes no action if the file does not exist.
 """
+
 from __future__ import annotations
 
 import json
@@ -24,7 +25,9 @@ def _save_json(path: Path, data: Any) -> None:
         json.dump(data, f)
 
 
-def _strip_history_values(history: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], bool]:
+def _strip_history_values(
+    history: List[Dict[str, Any]],
+) -> Tuple[List[Dict[str, Any]], bool]:
     changed = False
     for entry in history:
         for change in entry.get("changes", []):

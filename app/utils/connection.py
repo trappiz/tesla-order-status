@@ -8,7 +8,10 @@ from typing import Dict, Union
 from app.utils.helpers import exit_with_status
 from app.utils.locale import t
 
-def request_with_retry(url, headers=None, data=None, json=None, max_retries=3, exit_on_error=True):
+
+def request_with_retry(
+    url, headers=None, data=None, json=None, max_retries=3, exit_on_error=True
+):
     """Perform a GET or POST request with exponential backoff retries.
 
     Parameters
@@ -35,7 +38,7 @@ def request_with_retry(url, headers=None, data=None, json=None, max_retries=3, e
         404: t("404"),
         422: t("422"),
         429: t("429"),
-        '5xx': t("5xx"),
+        "5xx": t("5xx"),
     }
     for attempt in range(max_retries):
         try:
@@ -49,7 +52,10 @@ def request_with_retry(url, headers=None, data=None, json=None, max_retries=3, e
                     if isinstance(data, (dict, list)):
                         response = requests.post(
                             url,
-                            headers={"Content-Type": "application/json", **(headers or {})},
+                            headers={
+                                "Content-Type": "application/json",
+                                **(headers or {}),
+                            },
                             data=jsonlib.dumps(data, separators=(",", ":")),
                         )
                     else:
@@ -64,15 +70,22 @@ def request_with_retry(url, headers=None, data=None, json=None, max_retries=3, e
                     # Local import to prevent circular dependencies
                     from app.utils.auth import refresh_tokens
 
-                    print(color_text(t("Access token expired or invalid. Attempting to refresh..."), '93'))
+                    print(
+                        color_text(
+                            t(
+                                "Access token expired or invalid. Attempting to refresh..."
+                            ),
+                            "93",
+                        )
+                    )
 
                     # Fetch the new token
                     new_token = refresh_tokens()
 
                     if new_token:
                         # Update the headers with the new token
-                        if headers and 'Authorization' in headers:
-                            headers['Authorization'] = f"Bearer {new_token}"
+                        if headers and "Authorization" in headers:
+                            headers["Authorization"] = f"Bearer {new_token}"
 
                         # Continue to the next attempt in the loop without sleeping
                         continue
@@ -80,14 +93,16 @@ def request_with_retry(url, headers=None, data=None, json=None, max_retries=3, e
                 if response.status_code >= 500:
                     if attempt == max_retries - 1:
                         if exit_on_error:
-                            exit_with_status(_STATUS_TEXTS['5xx'])
+                            exit_with_status(_STATUS_TEXTS["5xx"])
                         else:
-                            raise RuntimeError(_STATUS_TEXTS['5xx'])
+                            raise RuntimeError(_STATUS_TEXTS["5xx"])
 
-                    time.sleep(5 ** attempt)
+                    time.sleep(5**attempt)
                     continue
                 else:
-                    error_text = _STATUS_TEXTS.get(response.status_code, _STATUS_TEXTS['5xx'])
+                    error_text = _STATUS_TEXTS.get(
+                        response.status_code, _STATUS_TEXTS["5xx"]
+                    )
                     if exit_on_error:
                         exit_with_status(error_text)
                     else:
@@ -97,8 +112,8 @@ def request_with_retry(url, headers=None, data=None, json=None, max_retries=3, e
         except requests.exceptions.RequestException:
             if attempt == max_retries - 1:
                 if exit_on_error:
-                    exit_with_status(_STATUS_TEXTS['5xx'])
+                    exit_with_status(_STATUS_TEXTS["5xx"])
                 else:
-                    raise RuntimeError(_STATUS_TEXTS['5xx'])
-            time.sleep(2 ** attempt)
+                    raise RuntimeError(_STATUS_TEXTS["5xx"])
+            time.sleep(2**attempt)
     return None

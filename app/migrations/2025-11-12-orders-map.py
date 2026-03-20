@@ -3,6 +3,7 @@ Migration: 2025-11-12-orders-map
 - Converts `tesla_orders.json` from a list view to a dictionary indexed by `referenceNumber` (or legacy fallback).
 - Preserves the order of the original entries and is idempotent.
 """
+
 from __future__ import annotations
 
 import json

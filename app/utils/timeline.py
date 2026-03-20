@@ -13,16 +13,16 @@ from app.utils.history import get_history_of_order
 from app.utils.locale import t
 
 TIMELINE_WHITELIST = {
-    'Reservation',
-    'Order Booked',
-    'Delivery Window',
-    'Expected Registration Date',
-    'ETA to Delivery Center',
-    'Delivery Appointment Date',
-    'VIN',
-    'Order Status',
-    'CAR BUILT',
-    'Vehicle Odometer'
+    "Reservation",
+    "Order Booked",
+    "Delivery Window",
+    "Expected Registration Date",
+    "ETA to Delivery Center",
+    "Delivery Appointment Date",
+    "VIN",
+    "Order Status",
+    "CAR BUILT",
+    "Vehicle Odometer",
 }
 TIMELINE_WHITELIST_NORMALIZED = {normalize_str(key) for key in TIMELINE_WHITELIST}
 
@@ -33,7 +33,9 @@ def _split_timestamp(value: Any) -> Tuple[str, Optional[str]]:
         date_display = parsed.date().isoformat()
         has_time_info = isinstance(value, str) and (":" in value or "T" in value)
         time_display = parsed.strftime("%H:%M") if has_time_info else None
-        return date_display, time_display if time_display and time_display != "00:00" else None
+        return date_display, (
+            time_display if time_display and time_display != "00:00" else None
+        )
     if isinstance(value, str) and value.strip():
         return value.strip(), None
     return t("Unknown"), None
@@ -41,17 +43,23 @@ def _split_timestamp(value: Any) -> Tuple[str, Optional[str]]:
 
 def _sort_timeline_entries(entries: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     enumerated = list(enumerate(entries))
-    enumerated.sort(key=lambda item: (_parse_iso_timestamp(item[1].get("timestamp")) or datetime.max, item[0]))
+    enumerated.sort(
+        key=lambda item: (
+            _parse_iso_timestamp(item[1].get("timestamp")) or datetime.max,
+            item[0],
+        )
+    )
     return [entry for _, entry in enumerated]
 
-def is_order_key_in_timeline(timeline, key, value = None):
+
+def is_order_key_in_timeline(timeline, key, value=None):
     """Return ``True`` if *timeline* contains an entry with *key* and *value*."""
 
     for entry in timeline:
         # if key is the same
-        if normalize_str(entry.get('key')) == normalize_str(key):
+        if normalize_str(entry.get("key")) == normalize_str(key):
             # if value empty or the same
-            if value is None or entry.get('value') == value:
+            if value is None or entry.get("value") == value:
                 return True
     return False
 
@@ -73,21 +81,21 @@ def get_timeline_from_history(order_reference: str, startdate) -> List[Dict[str,
                 continue
             timeline.append(
                 {
-                   "timestamp": entry["timestamp"],
-                   "key": "CAR BUILT",
-                   "value": "",
+                    "timestamp": entry["timestamp"],
+                    "key": "CAR BUILT",
+                    "value": "",
                 }
             )
             new_car = True
             continue
 
         if key_normalized == normalize_str("Delivery Window") and first_delivery_window:
-            if old_value not in ['None', 'N/A', '']:
+            if old_value not in ["None", "N/A", ""]:
                 timeline.append(
                     {
-                       "timestamp": startdate,
-                       "key": "Delivery Window",
-                       "value": old_value,
+                        "timestamp": startdate,
+                        "key": "Delivery Window",
+                        "value": old_value,
                     }
                 )
                 first_delivery_window = False
@@ -101,12 +109,15 @@ def get_timeline_from_history(order_reference: str, startdate) -> List[Dict[str,
         timeline.append(entry)
     return _sort_timeline_entries(timeline)
 
-def get_timeline_from_order(order_reference: str, detailed_order: Dict[str, Any]) -> List[Dict[str, Any]]:
+
+def get_timeline_from_order(
+    order_reference: str, detailed_order: Dict[str, Any]
+) -> List[Dict[str, Any]]:
     timeline: List[Dict[str, Any]] = []
 
     order_details = detailed_order.get("details", {})
     tasks = order_details.get("tasks", {})
-    scheduling = tasks.get('scheduling', {})
+    scheduling = tasks.get("scheduling", {})
     registration_data = tasks.get("registration", {})
     order_info = registration_data.get("orderDetails", {})
     final_payment_data = tasks.get("finalPayment", {}).get("data", {})
@@ -129,47 +140,62 @@ def get_timeline_from_order(order_reference: str, detailed_order: Dict[str, Any]
             }
         )
 
-    timeline_from_history = get_timeline_from_history(order_reference, get_date_from_timestamp(order_info.get("reservationDate")))
+    timeline_from_history = get_timeline_from_history(
+        order_reference, get_date_from_timestamp(order_info.get("reservationDate"))
+    )
 
-    if scheduling.get('deliveryWindowDisplay'):
-        if not is_order_key_in_timeline(timeline_from_history, 'Delivery Window'):
+    if scheduling.get("deliveryWindowDisplay"):
+        if not is_order_key_in_timeline(timeline_from_history, "Delivery Window"):
             timeline.append(
                 {
-                    "timestamp": get_date_from_timestamp(order_info.get("orderBookedDate")),
+                    "timestamp": get_date_from_timestamp(
+                        order_info.get("orderBookedDate")
+                    ),
                     "key": "Delivery Window",
-                    "value": scheduling.get('deliveryWindowDisplay'),
+                    "value": scheduling.get("deliveryWindowDisplay"),
                 }
             )
 
-
-    if registration_data.get('expectedRegDate'):
-        if not is_order_key_in_timeline(timeline_from_history, 'Expected Registration Date'):
+    if registration_data.get("expectedRegDate"):
+        if not is_order_key_in_timeline(
+            timeline_from_history, "Expected Registration Date"
+        ):
             timeline.append(
                 {
-                    "timestamp": get_date_from_timestamp(registration_data.get("expectedRegDate")),
+                    "timestamp": get_date_from_timestamp(
+                        registration_data.get("expectedRegDate")
+                    ),
                     "key": "Expected Registration Date",
                     "value": "",
                 }
             )
-        
-    if final_payment_data.get('etaToDeliveryCenter'):
-        if not is_order_key_in_timeline(timeline_from_history, 'ETA To Delivery Center'):
+
+    if final_payment_data.get("etaToDeliveryCenter"):
+        if not is_order_key_in_timeline(
+            timeline_from_history, "ETA To Delivery Center"
+        ):
             timeline.append(
                 {
-                    "timestamp": get_date_from_timestamp(final_payment_data.get("etaToDeliveryCenter")),
+                    "timestamp": get_date_from_timestamp(
+                        final_payment_data.get("etaToDeliveryCenter")
+                    ),
                     "key": "ETA To Delivery Center",
                     "value": "",
                 }
             )
-        
+
     appointment_display = get_delivery_appointment_display(tasks)
     if appointment_display:
-        if not is_order_key_in_timeline(timeline_from_history, 'Delivery Appointment Date'):
-            timeline.append({
-                "timestamp": appointment_display,
-                "key": "Delivery Appointment Date",
-                "value": "",
-            })
+        if not is_order_key_in_timeline(
+            timeline_from_history, "Delivery Appointment Date"
+        ):
+            timeline.append(
+                {
+                    "timestamp": appointment_display,
+                    "key": "Delivery Appointment Date",
+                    "value": "",
+                }
+            )
 
     timeline.extend(timeline_from_history)
     return _sort_timeline_entries(timeline)

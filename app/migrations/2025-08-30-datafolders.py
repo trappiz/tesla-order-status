@@ -6,6 +6,7 @@ Migration: 2025-08-30-datafolders
 
 Called by the migration runner in the main script.
 """
+
 from __future__ import annotations
 
 import shutil
@@ -49,7 +50,6 @@ def run() -> None:
     PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
     PRIVATE_DIR.mkdir(parents=True, exist_ok=True)
 
-
     legacy_map: Dict[str, Path] = {
         "tesla_tokens.json": PRIVATE_DIR / "tesla_tokens.json",
         "tesla_orders.json": PRIVATE_DIR / "tesla_orders.json",
@@ -57,11 +57,10 @@ def run() -> None:
         "tesla_locations.json": PUBLIC_DIR / "tesla_locations.json",
         "option-codes": PUBLIC_DIR / "option-codes",
         "update_check.py": "",
-        "tesla_stores.py": ""
+        "tesla_stores.py": "",
     }
 
     for legacy_name, dst in legacy_map.items():
         src = BASE_DIR / legacy_name
         if src.exists():
             _safe_move_with_backup(src, dst, backup_dir)
-

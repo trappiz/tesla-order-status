@@ -27,13 +27,17 @@ def decode_option_codes(option_string: str, prefer_short: bool = False):
     if not isinstance(option_string, str) or not option_string:
         return []
 
-    excluded_codes = {'MDL3', 'MDLY', 'MDLX', 'MDLS'}
-    codes = sorted({
-        c.strip().upper() for c in option_string.split(',')
-        if c.strip() and c.strip().upper() not in excluded_codes
-    })
+    excluded_codes = {"MDL3", "MDLY", "MDLX", "MDLS"}
+    codes = sorted(
+        {
+            c.strip().upper()
+            for c in option_string.split(",")
+            if c.strip() and c.strip().upper() not in excluded_codes
+        }
+    )
 
     from app.utils.option_codes import get_option_codes
+
     option_codes = get_option_codes()
     decoded = []
     for code in codes:
@@ -47,9 +51,7 @@ def decode_option_codes(option_string: str, prefer_short: bool = False):
         elif isinstance(entry, str):
             # Backwards compatibility for legacy caches
             label = entry
-        decoded.append(
-            (code, label if label else t("Unknown option code"))
-        )
+        decoded.append((code, label if label else t("Unknown option code")))
     return decoded
 
 
@@ -77,6 +79,7 @@ def get_date_from_timestamp(timestamp):
     except ValueError:
         return timestamp
     return dt.date().isoformat()
+
 
 def normalize_str(key: str) -> str:
     """
@@ -117,7 +120,7 @@ def compare_dicts(old_dict, new_dict, path=""):
                 {
                     "operation": "removed",
                     "key": path + key,
-                    "old_value": clean_str(old_dict[key])
+                    "old_value": clean_str(old_dict[key]),
                 }
             )
         elif isinstance(old_dict[key], dict) and isinstance(new_dict[key], dict):
@@ -129,13 +132,13 @@ def compare_dicts(old_dict, new_dict, path=""):
             new_value = clean_str(new_dict[key])
             if old_value != new_value:
                 differences.append(
-                {
-                    "operation": "changed",
-                    "key": path + key,
-                    "old_value": old_value,
-                    "value": new_value,
-                }
-            )
+                    {
+                        "operation": "changed",
+                        "key": path + key,
+                        "old_value": old_value,
+                        "value": new_value,
+                    }
+                )
 
     for key in new_dict:
         if key not in old_dict:
@@ -154,15 +157,18 @@ def _b32(data: bytes, length: Optional[int] = None) -> str:
     s = base64.b32encode(data).decode("ascii").rstrip("=")
     return s if length is None else s[:length]
 
+
 def _b32decode_nopad(s: str) -> bytes:
     pad = "=" * ((8 - (len(s) % 8)) % 8)
     return base64.b32decode(s + pad)
+
 
 def generate_token(bytes_len: int, token_length: Optional[int] = None) -> str:
     if token_length is not None:
         min_bytes = (token_length * 5 + 7) // 8  # ceil division
         bytes_len = max(bytes_len, min_bytes)
     return _b32(os.urandom(bytes_len), token_length)
+
 
 def pseudonymize_data(data: str, length: int) -> str:
     secret_b32 = Config.get("secret")
@@ -209,9 +215,9 @@ def get_delivery_appointment_display(tasks: Dict[str, Any]) -> Optional[str]:
             if formatted:
                 return formatted
 
-    scheduling = tasks.get('scheduling')
+    scheduling = tasks.get("scheduling")
     if isinstance(scheduling, dict):
-        raw = scheduling.get('deliveryAppointmentDate')
+        raw = scheduling.get("deliveryAppointmentDate")
         if isinstance(raw, str):
             formatted = format_timestamp_with_time(raw)
             if formatted:
@@ -219,7 +225,7 @@ def get_delivery_appointment_display(tasks: Dict[str, Any]) -> Optional[str]:
             condensed = " ".join(raw.split())
             return condensed or None
 
-        appt_text = scheduling.get('apptDateTimeAddressStr')
+        appt_text = scheduling.get("apptDateTimeAddressStr")
         if isinstance(appt_text, str):
             first_line = appt_text.splitlines()[0].strip()
             formatted = format_timestamp_with_time(first_line)
@@ -261,28 +267,30 @@ def locale_format_datetime(value: Any) -> Optional[str]:
     return dt.strftime(fmt)
 
 
-def _iter_delivery_appointment_sources(tasks: Dict[str, Any]) -> Iterable[Dict[str, Any]]:
-    delivery_details = tasks.get('deliveryDetails')
+def _iter_delivery_appointment_sources(
+    tasks: Dict[str, Any],
+) -> Iterable[Dict[str, Any]]:
+    delivery_details = tasks.get("deliveryDetails")
     if isinstance(delivery_details, dict):
-        reg_data = delivery_details.get('regData')
+        reg_data = delivery_details.get("regData")
         if isinstance(reg_data, dict):
-            appointment = reg_data.get('deliveryAppointment')
+            appointment = reg_data.get("deliveryAppointment")
             if isinstance(appointment, dict):
                 yield appointment
-        appointment = delivery_details.get('deliveryAppointment')
+        appointment = delivery_details.get("deliveryAppointment")
         if isinstance(appointment, dict):
             yield appointment
 
-    final_payment = tasks.get('finalPayment')
+    final_payment = tasks.get("finalPayment")
     if isinstance(final_payment, dict):
-        payment_data = final_payment.get('data')
+        payment_data = final_payment.get("data")
         if isinstance(payment_data, dict):
-            appointment = payment_data.get('deliveryAppointment')
+            appointment = payment_data.get("deliveryAppointment")
             if isinstance(appointment, dict):
                 yield appointment
 
-    scheduling = tasks.get('scheduling')
+    scheduling = tasks.get("scheduling")
     if isinstance(scheduling, dict):
-        appointment = scheduling.get('deliveryAppointment')
+        appointment = scheduling.get("deliveryAppointment")
         if isinstance(appointment, dict):
             yield appointment

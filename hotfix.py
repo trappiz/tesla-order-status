@@ -37,16 +37,19 @@ ZIP_URL = "https://github.com/trappiz/tesla-order-status/archive/refs/heads/main
 
 
 def main() -> None:
-    print("This script will just overwrite your installation with the most recent version.")
-    print("It can be used, if your installation and even the autoupdater is broken to fix the installation.")
-    print("As long as the autoupdater is working, there is no need, to use this script but it also should not damage your installation in any way.")
-    answer = input(
-        "You want to proceed the hotfix update? (y/n): "
-    ).strip().lower()
+    print(
+        "This script will just overwrite your installation with the most recent version."
+    )
+    print(
+        "It can be used, if your installation and even the autoupdater is broken to fix the installation."
+    )
+    print(
+        "As long as the autoupdater is working, there is no need, to use this script but it also should not damage your installation in any way."
+    )
+    answer = input("You want to proceed the hotfix update? (y/n): ").strip().lower()
     if answer != "y":
         print("\nHotfix canceled...")
         sys.exit(1)
-
 
     print("\nDownloading latest files...")
     try:
@@ -63,19 +66,23 @@ def main() -> None:
 
             extracted_dir = next(p for p in tmp_path.iterdir() if p.is_dir())
             for item in extracted_dir.iterdir():
-                target = Path('.') / item.name
+                target = Path(".") / item.name
                 if item.is_dir():
                     _copytree_compat(item, target)
                 else:
                     shutil.copy2(item, target)
         print("...Hotfix applied. Please rerun tesla_order_status.py")
-        print("\nIf the problem persists, please create an issue including the complete output of tesla_order_status.py")
+        print(
+            "\nIf the problem persists, please create an issue including the complete output of tesla_order_status.py"
+        )
         print("GitHub Issues: https://github.com/trappiz/tesla-order-status/issues")
 
     except Exception as e:  # noqa: BLE001 - best effort, minimal deps
         print(f"...Hotfix failed: {e}\n")
         traceback.print_exc()
-        print("\nIf the problem persists, please create an issue including the complete output of hotfix.py")
+        print(
+            "\nIf the problem persists, please create an issue including the complete output of hotfix.py"
+        )
         print("GitHub Issues: https://github.com/trappiz/tesla-order-status/issues")
         sys.exit(1)
 

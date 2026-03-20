@@ -4,6 +4,7 @@ import os
 import sys
 import re
 
+
 def _supports_color():
     """Return True if ANSI colors are supported on this output."""
     if os.getenv("NO_COLOR"):
@@ -29,4 +30,4 @@ def color_text(text, color_code):
 
 
 def strip_color(text):
-    return re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', text)
+    return re.sub(r"\x1B\[[0-?]*[ -/]*[@-~]", "", text)
