@@ -682,4 +682,3 @@ __all__ = [
     "_select_release_archive",
     "_select_release_checksum_asset",
 ]
-
